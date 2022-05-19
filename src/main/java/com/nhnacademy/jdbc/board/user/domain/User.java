@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class User {
 
-    private static final Character IS_ADMIN = 'Y';
-    private static final Character IS_NOT_ADMIN = 'N';
+    public static final Character IS_ADMIN = 'Y';
+    public static final Character IS_NOT_ADMIN = 'N';
 
     private final Long userNo;
     private final String username;

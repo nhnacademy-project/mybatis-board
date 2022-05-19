@@ -1,24 +1,30 @@
 package com.nhnacademy.jdbc.board.post.dto.request;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
-@AllArgsConstructor
 public class PostModifyRequest {
 
-    @Setter
+    @NotNull
+    private final Long postNo;
+
+    @Size(max = 25)
+    @NotNull
     private final String title;
 
-    @Setter
+    @Size(max = 250)
+    @NotNull
     private final String content;
 
     @Setter
-    private final Date modifiedAt;
+    private Long modifyUserNo;
 
-    @Setter
-    private final Long modifyUserNo;
+    public PostModifyRequest(Long postNo, String title, String content) {
+        this.postNo = postNo;
+        this.title = title;
+        this.content = content;
+    }
 }
