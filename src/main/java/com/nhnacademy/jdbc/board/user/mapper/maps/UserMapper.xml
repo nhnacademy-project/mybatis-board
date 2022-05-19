@@ -5,7 +5,7 @@
 
 <mapper namespace="com.nhnacademy.jdbc.board.user.mapper.UserMapper">
 
-    <select id="selectUser" resultType="com.nhnacademy.jdbc.board.user.domain.User">
+    <select id="loginUser" resultType="com.nhnacademy.jdbc.board.user.domain.User">
         select *
         from user
         where username = #{username} and password = #{password}

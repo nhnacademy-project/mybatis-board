@@ -12,6 +12,7 @@ public class PostResponse {
 
     private final Long postNo;
     private final Long writerNo;
+    private final String username;
     private final String writer;
     private final String title;
     private final String content;
@@ -24,6 +25,7 @@ public class PostResponse {
     public PostResponse(ReadPost post) {
         this.postNo = post.getPostNo();
         this.writerNo = post.getWriterNo();
+        this.username = post.getUsername();
         this.writer = post.getWriter();
         this.title = post.getTitle();
         this.content = post.getContent();

@@ -18,7 +18,7 @@ public class DefaultUserService implements UserService {
     public UserLoginResponse doLogin(UserLoginRequest userLoginRequest) {
 
         User user =
-            userMapper.selectUser(userLoginRequest.getUsername(), userLoginRequest.getPassword())
+            userMapper.loginUser(userLoginRequest.getUsername(), userLoginRequest.getPassword())
                       .orElseThrow(UserNotFoundException::new);
 
         return new UserLoginResponse(user.getUserNo(),user.getName(), user.getUsername(), user.getAdminNY());
