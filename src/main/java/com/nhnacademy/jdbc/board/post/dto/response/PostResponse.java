@@ -19,7 +19,7 @@ public class PostResponse {
     private final Date createdAt;
     private Character deleteNY;
     private String filePath;
-    private Long modifiedNo;
+    private Long modifyUserNo;
     private Date modifiedAt;
 
     public PostResponse(ReadPost post) {
@@ -32,7 +32,7 @@ public class PostResponse {
         this.createdAt = post.getCreatedAt();
         this.deleteNY = post.getDeleteNY();
         this.filePath = post.getFilePath();
-        this.modifiedNo = post.getModifyUserNo();
+        this.modifyUserNo = post.getModifyUserNo();
         this.modifiedAt = post.getModifiedAt();
     }
 

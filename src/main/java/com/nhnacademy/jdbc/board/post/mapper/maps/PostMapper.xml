@@ -5,8 +5,17 @@
 <mapper namespace="com.nhnacademy.jdbc.board.post.mapper.PostMapper">
 
     <insert id="insertPost">
-        INSERT INTO post(writer_no, title, content, created_at, delete_NY)
-        VALUES (#{userNo}, #{title}, #{content}, #{createdAt}, 'N')
+        INSERT INTO post( writer_no
+                        , title
+                        , content
+                        , created_at
+                        , delete_NY)
+
+        VALUES ( #{userNo}
+               , #{title}
+               , #{content}
+               , now()
+               , 'N')
     </insert>
 
     <select id="findPostById" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
@@ -21,6 +30,7 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+>>>>>>> upstream/develop
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no
         WHERE post_no = #{postNo}
@@ -58,5 +68,14 @@
                  INNER JOIN user u ON p.writer_no = u.user_no
         WHERE p.delete_NY = 'N'
     </select>
+
+    <update id="modifyPostByNo">
+        UPDATE post
+        set title         = #{title}
+          , content       = #{content}
+          , modified_at   = now()
+          , modify_user_no=#{modifyUserNo}
+        where post_no = #{postNo}
+    </update>
 
 </mapper>

@@ -15,4 +15,6 @@ public interface PostMapper {
     List<ReadPost> findNotDeletedPosts();
 
     List<ReadPost> findAllPosts();
+
+    void modifyPostByNo(Post post);
 }
