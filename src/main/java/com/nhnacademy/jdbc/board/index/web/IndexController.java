@@ -14,7 +14,6 @@ import java.util.Optional;
 @RequestMapping
 @Slf4j
 public class IndexController {
-
     private final StudentService studentService;
 
     public IndexController(DefaultStudentService studentService) {
