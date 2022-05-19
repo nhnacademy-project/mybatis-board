@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhnacademy.jdbc.board.post.mapper.PostMapper">
+
+    <insert id="insertPost">
+        INSERT INTO post(writer_no, title, content, created_at, delete_NY)
+        VALUES (#{userNo}, #{title}, #{content}, #{createdAt}, 'N')
+    </insert>
+
+    <select id="selectPosts" resultType="com.nhnacademy.jdbc.board.post.domain.Post">
+        SELECT *
+        FROM post
+    </select>
+
+</mapper>
