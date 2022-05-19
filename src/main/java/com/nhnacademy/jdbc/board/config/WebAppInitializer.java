@@ -11,7 +11,6 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     protected Class<?>[] getRootConfigClasses() {
         return new Class[]{com.nhnacademy.jdbc.board.config.RootConfig.class};
     }
-
     @Override
     protected Class<?>[] getServletConfigClasses() {
         return new Class[]{ WebConfig.class };
