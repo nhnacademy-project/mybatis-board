@@ -47,4 +47,13 @@ public class PostController {
 
     }
 
+    @GetMapping("/posts")
+    public ModelAndView posts() {
+
+        ModelAndView mav = new ModelAndView("post/posts");
+
+        mav.addObject("posts", postService.findNotDeletedPosts());
+        return mav;
+    }
+
 }

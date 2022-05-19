@@ -9,8 +9,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class Post {
 
-    private static final Character DELETED = 'Y';
-    private static final Character NOT_DELETED = 'N';
+    public static final Character DELETED = 'Y';
+    public static final Character NOT_DELETED = 'N';
 
     private Long postNo;
     private final Long userNo;
