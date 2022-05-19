@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public interface StudentMapper {
 
-    Optional<Student> selectStudent(long id);
-
-    List<Student> selectStudents();
-
-    void insertStudent(Student student);
-
-    void updateNameById(String name, long id);
-
-    void deleteById(long id);
+//    Optional<Student> selectStudent(long id);
+//
+//    List<Student> selectStudents();
+//
+//    void insertStudent(Student student);
+//
+//    void updateNameById(String name, long id);
+//
+//    void deleteById(long id);
 }
