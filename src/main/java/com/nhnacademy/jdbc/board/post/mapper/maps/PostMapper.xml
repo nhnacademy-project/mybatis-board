@@ -10,19 +10,50 @@
     </insert>
 
     <select id="findPostById" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT p.post_no as 'postNo', u.user_no as 'writerNo', u.name as 'writer', p.title as 'title', p.content as 'content', p.created_at as 'createdAt', p.delete_NY as 'deletedAt', p.file_path as 'filePath', p.modify_user_no as 'modifyUserNo', p.modified_at as 'modifiedAt'
-        FROM post
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deletedAt'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+        FROM post p
+                 INNER JOIN user u ON p.writer_no = u.user_no
         WHERE post_no = #{postNo}
     </select>
 
     <select id="findAllPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT p.post_no as 'postNo', u.user_no as 'writerNo', u.name as 'writer', p.title as 'title', p.content as 'content', p.created_at as 'createdAt', p.delete_NY as 'deletedAt', p.file_path as 'filePath', p.modify_user_no as 'modifyUserNo', p.modified_at as 'modifiedAt'
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deletedAt'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no
     </select>
 
     <select id="findNotDeletedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT p.post_no as 'postNo', u.user_no as 'writerNo', u.name as 'writer', p.title as 'title', p.content as 'content', p.created_at as 'createdAt', p.delete_NY as 'deletedAt', p.file_path as 'filePath', p.modify_user_no as 'modifyUserNo', p.modified_at as 'modifiedAt'
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deletedAt'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no
         WHERE p.delete_NY = 'N'
