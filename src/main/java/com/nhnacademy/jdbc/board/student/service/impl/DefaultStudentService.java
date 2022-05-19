@@ -21,7 +21,6 @@ public class DefaultStudentService implements StudentService {
     }
 
     public Optional<Student> getStudent(long id){
-        return Optional.empty();
-//        return studentMapper.selectStudent(id);
+        return studentMapper.selectStudent(id);
     }
 }
