@@ -15,6 +15,7 @@ import java.io.IOException;
 @Configuration
 @MapperScan(basePackages = "**.mapper.**",  sqlSessionFactoryRef = "sqlSessionFactoryBean")
 public class MybatisConfig {
+
     @Bean
     public DataSource dataSource(){
         BasicDataSource basicDataSource = new BasicDataSource();
