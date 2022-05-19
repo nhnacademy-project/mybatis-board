@@ -1,12 +1,17 @@
 package com.nhnacademy.jdbc.board.post.service;
 
-import com.nhnacademy.jdbc.board.post.domain.Post;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
-
-import java.util.Optional;
+import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
+import java.util.List;
 
 public interface PostService {
-    Optional<Post> getPost(long postNo);
+
     void insertPost(PostInsertRequest postInsertRequest);
+
+    PostResponse findPostById(Long postNo);
+
+    List<PostResponse> findNotDeletedPosts();
+
+    List<PostResponse> findAllPosts();
 
 }
