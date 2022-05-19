@@ -5,13 +5,32 @@
 <mapper namespace="com.nhnacademy.jdbc.board.post.mapper.PostMapper">
 
     <insert id="insertPost">
-        INSERT INTO post(writer_no, title, content, created_at, delete_NY)
-        VALUES (#{userNo}, #{title}, #{content}, #{createdAt}, 'N')
+        INSERT INTO post(writer_no
+                        , title
+                        , content
+                        , created_at
+                        , delete_NY)
+
+        VALUES (#{userNo}
+                , #{title}
+                , #{content}
+                , #{createdAt}
+                , 'N')
     </insert>
 
     <select id="selectPosts" resultType="com.nhnacademy.jdbc.board.post.domain.Post">
         SELECT *
         FROM post
     </select>
+
+    <update id="updatePostByNo" >
+        UPDATE post set title = '${title}'
+                      , content = '${content}'
+                      , created_at = '${createdAt}'
+                      , delete_NY = 'N'
+                      , modified_at = '${modifiedAt}'
+                      , modify_user_no='${modifyUserNo}'
+        where post_no ='${postNo}'
+    </update>
 
 </mapper>
