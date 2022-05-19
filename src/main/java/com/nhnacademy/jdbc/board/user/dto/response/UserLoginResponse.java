@@ -14,6 +14,6 @@ public class UserLoginResponse {
     private final Character adminNY;
 
     public boolean isAdmin() {
-        return this.adminNY == User.IS_ADMIN;
+        return adminNY == User.IS_ADMIN;
     }
 }
