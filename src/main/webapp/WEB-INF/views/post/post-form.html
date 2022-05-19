@@ -5,12 +5,19 @@
     <title>게시물 등록</title>
 </head>
 <body>
-<form method="post" action="/post/insert">
-    제목: <input type="text" name="title" /><br />
-    <hr>
-    <textarea name="content" rows="10" cols="80">내용을 입력하세요.</textarea><br />
+<form method="post" action="write">
 
-    <input type="submit" />
+    <label>
+        제목<br />
+        <input type="text" name="title" placeholder="제목을 입력하세요."/>
+    </label><br />
+
+    <label>
+    <textarea name="content" rows="10" cols="80" placeholder="내용을 입력하세요."></textarea>
+    </label><br />
+
+    <input type="submit" value="등록"/>
+
 </form>
 </body>
 </html>

@@ -17,7 +17,7 @@ public class Post {
     private final String title;
     private final String content;
     private final Date createdAt;
-    private Character deleteYN = NOT_DELETED;
+    private Character deleteNY;
     private String filePath;
     private Date modifiedAt;
     private Long modifiedNo;
