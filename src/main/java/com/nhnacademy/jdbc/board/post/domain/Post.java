@@ -28,5 +28,4 @@ public class Post {
         this.content = content;
         this.createdAt = createdAt;
     }
-
 }

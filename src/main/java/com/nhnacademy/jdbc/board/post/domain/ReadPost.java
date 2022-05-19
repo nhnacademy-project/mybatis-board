@@ -13,6 +13,7 @@ public class ReadPost {
 
     private Long postNo;
     private Long writerNo;
+    private String username;
     private String writer;
     private String title;
     private String content;

@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @MapperScan(basePackages = "**.mapper.**", sqlSessionFactoryRef = "sqlSessionFactoryBean")
 public class MybatisConfig {
+
     @Bean
     public DataSource dataSource() {
         BasicDataSource basicDataSource = new BasicDataSource();

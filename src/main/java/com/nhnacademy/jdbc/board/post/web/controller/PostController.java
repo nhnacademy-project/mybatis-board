@@ -8,6 +8,7 @@ import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
+
     private final PostService postService;
 
     @GetMapping(value = "/write")
@@ -45,6 +47,15 @@ public class PostController {
 
         return mav;
 
+    }
+
+    @GetMapping("/{postNo}")
+    public ModelAndView post(@PathVariable("postNo") Long postNo) {
+
+        ModelAndView mav = new ModelAndView("post/post");
+
+        mav.addObject("post", postService.findPostById(postNo));
+        return mav;
     }
 
     @GetMapping("/posts")
