@@ -1,5 +1,6 @@
 package com.nhnacademy.jdbc.board.post.mapper;
 
+import com.nhnacademy.jdbc.board.post.domain.DeletePost;
 import com.nhnacademy.jdbc.board.post.domain.Post;
 import com.nhnacademy.jdbc.board.post.domain.ReadPost;
 import java.util.List;
@@ -19,5 +20,8 @@ public interface PostMapper {
     List<ReadPost> findPagedPosts(@Param("offset") Integer offset);
 
     void modifyPostByNo(Post post);
+
+    void deletePostByNo(@Param("postNo") Long postNo);
+
     Integer selectPageCount();
 }

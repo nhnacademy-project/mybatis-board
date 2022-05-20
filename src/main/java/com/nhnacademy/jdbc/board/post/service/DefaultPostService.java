@@ -48,6 +48,13 @@ public class DefaultPostService implements PostService {
     }
 
     @Override
+    public void deletePost(Long postNo) {
+        postMapper.deletePostByNo(postNo);
+
+
+    }
+
+    @Override
     public PostResponse findPostByNo(Long postNo) {
         return postMapper.findPostById(postNo)
                          .map(PostResponse::new)

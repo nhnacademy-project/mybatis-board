@@ -18,8 +18,12 @@
                 (${post.username} == ${session.user['username']} or
                  ${session.user['adminNY']} == 'Y')">
 
-        <button>수정</button>&nbsp;
-        <button>삭제</button>
+        <button th:onclick="'location.href=\''+ @{|/post/modify/${post.postNo}|} + '\''">수정</button>&nbsp;
+        <form th:action="@{|delete/${post.postNo}|}" method="post">
+            <input type="submit" value="삭제" />
+        </form>
+
+<!--        "'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''"-->
     </div>
     <br/>
 
