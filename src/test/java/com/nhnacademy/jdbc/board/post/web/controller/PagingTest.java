@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import com.nhnacademy.jdbc.board.comment.service.CommentService;
 import com.nhnacademy.jdbc.board.post.domain.Page;
 import com.nhnacademy.jdbc.board.post.service.DefaultPostService;
 import com.nhnacademy.jdbc.board.post.service.PostService;
@@ -15,13 +16,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 public class PagingTest {
+
     MockMvc mockMvc;
     PostService postService;
+    CommentService commentService;
 
     @BeforeEach
     void setUp() {
         postService = mock(DefaultPostService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService)).build();
+        commentService = mock(CommentService.class);
+        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService, commentService)).build();
     }
 
 

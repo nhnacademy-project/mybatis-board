@@ -1,5 +1,6 @@
 package com.nhnacademy.jdbc.board.post.web.controller;
 
+import com.nhnacademy.jdbc.board.comment.service.CommentService;
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
 import com.nhnacademy.jdbc.board.exception.UserNotFoundException;
 import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
@@ -8,11 +9,11 @@ import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
-import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @GetMapping(value = "/write")
     public ModelAndView insert(PostInsertRequest postInsertRequest) {
@@ -70,6 +72,7 @@ public class PostController {
 
         ModelAndView mav = new ModelAndView("post/post");
 
+        mav.addObject("comments", commentService.findComments(postNo));
         mav.addObject("post", postService.findPostByNo(postNo));
         return mav;
     }

@@ -88,7 +88,7 @@ class PostControllerTest {
         PostService postService = mock(PostService.class);
         PostInsertRequest postInsertRequest = mock(PostInsertRequest.class);
         BindingResult bindingResult = mock(BindingResult.class);
-        PostController postController = new PostController(postService);
+        PostController postController = new PostController(postService, null);
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
         when(bindingResult.hasErrors()).thenReturn(true);
