@@ -28,5 +28,32 @@
     <textarea th:text="${post.content}" rows="10" cols="80" readonly></textarea>
 </div>
 
+<div>
+    <h3>댓글</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>작성자</th>
+            <th>작성일</th>
+            <th>내용</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td>${comment.writerName}</td>
+            <td>${comment.createdAt}</td>
+            <td>${comment.content}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${session.user != null}">
+        <h4>댓글 작성</h4>
+        <form method="post" th:action="@{/comment + ${post.id}">
+            <textarea name="content" rows="5" cols="80" placeholder="댓글을 입력해주세요."></textarea>
+            <input type="submit" value="작성">
+        </form>
+    </div>
+</div>
 </body>
 </html>

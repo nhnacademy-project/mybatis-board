@@ -1,5 +1,6 @@
 package com.nhnacademy.jdbc.board.post.web.controller;
 
+import com.nhnacademy.jdbc.board.comment.service.CommentService;
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
 import com.nhnacademy.jdbc.board.exception.UserNotFoundException;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
@@ -25,6 +26,7 @@ import java.util.Objects;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @GetMapping(value = "/write")
     public ModelAndView insert() {
