@@ -6,7 +6,6 @@
 </head>
 <body>
 <form method="post" th:action="@{${url}}" th:object="${post}">
-
     <label>
         제목<br />
         <input type="text" th:field="*{title}" name="title" placeholder="제목을 입력하세요."/>
