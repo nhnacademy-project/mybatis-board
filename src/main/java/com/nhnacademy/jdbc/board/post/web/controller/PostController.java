@@ -3,7 +3,6 @@ package com.nhnacademy.jdbc.board.post.web.controller;
 import com.nhnacademy.jdbc.board.comment.service.CommentService;
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
 import com.nhnacademy.jdbc.board.exception.NoAuthorizationException;
-import com.nhnacademy.jdbc.board.exception.UserNotFoundException;
 import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
 import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
@@ -12,7 +11,6 @@ import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -41,22 +39,27 @@ public class PostController {
     private final CommentService commentService;
 
     @GetMapping(value = "/write")
-    public ModelAndView insert(PostInsertRequest postInsertRequest) {
-        return new ModelAndView("post/post-form").addObject("post", postInsertRequest);
+    public ModelAndView insert(PostInsertRequest postInsertRequest, HttpSession session) {
 
+        if (Objects.isNull(session.getAttribute("user"))) {
+            throw new NoAuthorizationException();
+        }
+
+        return new ModelAndView("post/post-form").addObject("post", postInsertRequest);
     }
 
     @PostMapping(value = "/write")
-    public ModelAndView doInsert(@ModelAttribute @Valid PostInsertRequest postInsertRequest, BindingResult bindingResult, HttpServletRequest request) {
+    public ModelAndView doInsert(@ModelAttribute @Valid PostInsertRequest postInsertRequest,
+                                 BindingResult bindingResult, HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
         UserLoginResponse userLoginResponse = (UserLoginResponse) session.getAttribute("user");
 
         if (Objects.isNull(userLoginResponse)) {
-            throw new UserNotFoundException();
+            throw new NoAuthorizationException();
         }
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
 
@@ -101,7 +104,9 @@ public class PostController {
     @GetMapping(value = "/modify/{postNo}")
     public ModelAndView modify(@PathVariable(name = "postNo") Long postNo, HttpSession session) {
 
-        UserLoginResponse user = (UserLoginResponse) session.getAttribute("user");
+        UserLoginResponse user =
+            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                    .orElseThrow(NoAuthorizationException::new);
 
         if (canNotModify(postNo, user)) {
             throw new ModifyAccessException();
@@ -123,7 +128,9 @@ public class PostController {
     @PostMapping(value = "/modify/{postNo}")
     public ModelAndView doModify(@ModelAttribute PostModifyRequest request, HttpSession session) {
 
-        UserLoginResponse user = (UserLoginResponse) session.getAttribute("user");
+        UserLoginResponse user =
+            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                    .orElseThrow(NoAuthorizationException::new);
 
         if (canNotModify(request.getPostNo(), user)) {
             throw new ModifyAccessException();
@@ -138,17 +145,17 @@ public class PostController {
     @PostMapping(value = "/delete/{postNo}")
     public ModelAndView doDelete(@PathVariable("postNo") Long postNo, HttpSession session) {
 
-        UserLoginResponse user = Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
-                .orElseThrow(NoAuthorizationException::new);
+        UserLoginResponse user =
+            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                    .orElseThrow(NoAuthorizationException::new);
 
-        if(canNotModify(postNo, user)){
+        if (canNotModify(postNo, user)) {
             throw new ModifyAccessException();
         }
         postService.deletePost(postNo);
 
         return new ModelAndView("redirect:/post/posts");
     }
-
 
 
     private boolean canNotModify(Long postNo, UserLoginResponse user) {
