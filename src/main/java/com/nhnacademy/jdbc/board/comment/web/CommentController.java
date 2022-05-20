@@ -33,6 +33,9 @@ public class CommentController {
             throw new ContentLengthOverException();
         }
 
+        log.info("comment insert");
+        log.info("postno = {}", postNo);
+
         UserLoginResponse user =
             Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
                     .orElseThrow(NoAuthorizationException::new);
