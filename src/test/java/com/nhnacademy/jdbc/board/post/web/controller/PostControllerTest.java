@@ -1,6 +1,5 @@
 package com.nhnacademy.jdbc.board.post.web.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -12,11 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.nhnacademy.jdbc.board.config.RootConfig;
 import com.nhnacademy.jdbc.board.config.WebConfig;
 import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
-import com.nhnacademy.jdbc.board.post.domain.Post;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
-import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.service.PostService;
-import com.nhnacademy.jdbc.board.user.domain.User;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,16 +25,11 @@ import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -140,49 +131,4 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("post/post-form"));
     }
-
-
-
-//        MultiValueMap<String, String> insertValues = new LinkedMultiValueMap<>();
-
-//        insertValues.add("title", "하이이ㅣ이이이이이이이이이이이ㅣ이이이이이ㅣ이이잉");
-//        insertValues.add("content", "여긴 250자를 적어줘야해서 너무 많음.");
-//
-//        MvcResult mvcResult = (MvcResult) mockMvc.perform(post("/post/login")
-//                        .param("username", "admin")
-//                        .param("password", "1234"))
-//                .andExpect((ResultMatcher) post("/post/write")
-//                        .param("title", String.valueOf(insertValues.get("title")))
-//                        .param("content", String.valueOf(insertValues.get("content"))))
-//                .andExpect(cont);
-//
-//        assertThat(mvcResult.getModelAndView()).isExactlyInstanceOf(ValidationFailedException.class);
-//
-//        MvcResult mvcResult1 = mockMvc.perform(post("/login")
-//                        .param("username", "admin")
-//                        .param("password", "1234"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/"))
-//                .andReturn();
-    }
-
-
-//    @Test
-//    @DisplayName("게시물 작성 에러2")
-//    void insertWriteError() throws Exception {
-//
-//        PostService postService = mock(PostService.class);
-//        HttpServletRequest request = mock(HttpServletRequest.class);
-//        PostController postController = new PostController(postService);
-//
-//        when(postController.hasErrors()).thenReturn(true);
-//
-//        assertThatThrownBy(() -> postController.doInsert())
-//
-//    }
-
-//    @Test
-//    @DisplayName("게시물 수정폼 진입")
-//    void modify() throws Exception {
-//        mockMvc.perform(get("/post/modify/{postNo}"));
-//    }
+}

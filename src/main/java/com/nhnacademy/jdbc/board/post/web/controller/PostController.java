@@ -9,21 +9,25 @@ import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import jakarta.validation.Valid;
+import java.util.Objects;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Objects;
 
+@Slf4j
 @Controller
 @RequestMapping("/post")
 @RequiredArgsConstructor
@@ -35,6 +39,7 @@ public class PostController {
     @GetMapping(value = "/write")
     public ModelAndView insert(PostInsertRequest postInsertRequest) {
         return new ModelAndView("post/post-form").addObject("post", postInsertRequest);
+
     }
 
     @PostMapping(value = "/write")
@@ -70,11 +75,21 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ModelAndView posts() {
+    public ModelAndView posts(@RequestParam(name = "page", required = false) Integer page) {
+
+        page = Optional.ofNullable(page).orElse(1);
+
+        if (page < 1) {
+            return new ModelAndView("redirect:posts?page=1");
+        }
+
+        int totalPage = postService.getTotalPage();
+        if (page > totalPage) {
+            return new ModelAndView("redirect:posts?page=" + totalPage);
+        }
 
         ModelAndView mav = new ModelAndView("post/posts");
-
-        mav.addObject("posts", postService.findNotDeletedPosts());
+        mav.addObject("page", postService.findPagedPosts(page, totalPage));
         return mav;
     }
 
@@ -118,5 +133,4 @@ public class PostController {
     private boolean canNotModify(Long postNo, UserLoginResponse user) {
         return !(user.isAdmin() || postService.isWriter(postNo, user.getUserNo()));
     }
-
 }
