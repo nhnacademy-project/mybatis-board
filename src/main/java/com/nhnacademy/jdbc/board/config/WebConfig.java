@@ -26,6 +26,7 @@ import org.thymeleaf.templatemode.TemplateMode;
     , useDefaultFilters = false
     , includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {Controller.class}))
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware, MessageSourceAware {
+
     private ApplicationContext applicationContext;
     private MessageSource messageSource;
 
@@ -77,5 +78,4 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware, Mes
         requestMappingHandlerAdapter.setIgnoreDefaultModelOnRedirect(true);
         return requestMappingHandlerAdapter;
     }
-
 }
