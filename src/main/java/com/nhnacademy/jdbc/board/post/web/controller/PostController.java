@@ -2,11 +2,13 @@ package com.nhnacademy.jdbc.board.post.web.controller;
 
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
 import com.nhnacademy.jdbc.board.exception.UserNotFoundException;
+import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
 import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
+import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,22 +26,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+
 @Slf4j
 @Controller
 @RequestMapping("/post")
 @RequiredArgsConstructor
+@Validated
 public class PostController {
 
     private final PostService postService;
 
     @GetMapping(value = "/write")
-    public ModelAndView insert(PostInsertRequest request) {
-        log.info("is true = {}", request == null);
-        return new ModelAndView("post/post-form");
+    public ModelAndView insert(PostInsertRequest postInsertRequest) {
+        return new ModelAndView("post/post-form").addObject("post", postInsertRequest);
+
     }
 
     @PostMapping(value = "/write")
-    public ModelAndView doInsert(PostInsertRequest postInsertRequest, HttpServletRequest request) {
+    public ModelAndView doInsert(@ModelAttribute @Valid PostInsertRequest postInsertRequest, BindingResult bindingResult, HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
         UserLoginResponse userLoginResponse = (UserLoginResponse) session.getAttribute("user");
@@ -46,9 +52,13 @@ public class PostController {
             throw new UserNotFoundException();
         }
 
+        if (bindingResult.hasErrors()){
+            throw new ValidationFailedException(bindingResult);
+        }
+
         postInsertRequest.setUserNo(userLoginResponse.getUserNo());
 
-        ModelAndView mav = new ModelAndView("redirect:post/posts");
+        ModelAndView mav = new ModelAndView("redirect:posts");
         mav.addObject("url", "write");
         postService.insertPost(postInsertRequest);
 

@@ -61,6 +61,7 @@ class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
         UserController userController = new UserController(userService);
+
         when(bindingResult.hasErrors()).thenReturn(true);
 
         assertThatThrownBy(() -> userController.doLogin(null, bindingResult, request))
@@ -80,4 +81,5 @@ class UserControllerTest {
         HttpSession session = mvcResult.getRequest().getSession(false);
         assertThat(session).isNotNull();
     }
+
 }

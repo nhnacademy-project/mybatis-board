@@ -19,6 +19,5 @@ public interface PostMapper {
     List<ReadPost> findPagedPosts(@Param("offset") Integer offset);
 
     void modifyPostByNo(Post post);
-
     Integer selectPageCount();
 }
