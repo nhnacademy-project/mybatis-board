@@ -13,6 +13,8 @@ public interface PostService {
 
     void modifyPost(PostModifyRequest postModifyRequest);
 
+    void deletePost(Long postNo);
+
     PostResponse findPostByNo(Long postNo);
 
     List<PostResponse> findNotDeletedPosts();

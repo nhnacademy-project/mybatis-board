@@ -1,6 +1,7 @@
 package com.nhnacademy.jdbc.board.post.web.controller;
 
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
+import com.nhnacademy.jdbc.board.exception.NoAuthorizationException;
 import com.nhnacademy.jdbc.board.exception.UserNotFoundException;
 import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
@@ -11,6 +12,7 @@ import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -129,6 +131,22 @@ public class PostController {
 
         return new ModelAndView("redirect:/post/posts");
     }
+
+    @PostMapping(value = "/delete/{postNo}")
+    public ModelAndView doDelete(@PathVariable("postNo") Long postNo, HttpSession session) {
+
+        UserLoginResponse user = Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                .orElseThrow(NoAuthorizationException::new);
+
+        if(canNotModify(postNo, user)){
+            throw new ModifyAccessException();
+        }
+        postService.deletePost(postNo);
+
+        return new ModelAndView("redirect:/post/posts");
+    }
+
+
 
     private boolean canNotModify(Long postNo, UserLoginResponse user) {
         return !(user.isAdmin() || postService.isWriter(postNo, user.getUserNo()));
