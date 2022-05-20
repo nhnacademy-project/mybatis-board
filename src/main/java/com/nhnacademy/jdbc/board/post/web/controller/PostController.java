@@ -9,11 +9,14 @@ import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
+
 import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -71,7 +74,6 @@ public class PostController {
 
         return mav;
     }
-
     @GetMapping("/{postNo}")
     public ModelAndView post(@PathVariable("postNo") Long postNo) {
 
@@ -83,7 +85,9 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ModelAndView posts(@RequestParam(name = "page", required = false) Integer page) {
+    public ModelAndView posts(@RequestParam(name = "page", required = false) Integer page, HttpSession httpSession) {
+
+        UserLoginResponse user = (UserLoginResponse) httpSession.getAttribute("user");
 
         page = Optional.ofNullable(page).orElse(1);
 
@@ -97,8 +101,18 @@ public class PostController {
         }
 
         ModelAndView mav = new ModelAndView("post/posts");
-        mav.addObject("page", postService.findPagedPosts(page, totalPage));
+        boolean isFilter = false;
+
+        if (isLoginAdmin(user)) {
+            mav.addObject("page", postService.findPagedPosts(page, totalPage, isFilter));
+        } else {
+            isFilter = true;
+            mav.addObject("page", postService.findPagedPosts(page, totalPage, isFilter));
+        }
         return mav;
+    }
+    private boolean isLoginAdmin(UserLoginResponse user) {
+        return Objects.nonNull(user) && user.isAdmin();
     }
 
     @GetMapping(value = "/modify/{postNo}")
@@ -142,7 +156,7 @@ public class PostController {
         return new ModelAndView("redirect:/post/posts");
     }
 
-    @PostMapping(value = "/delete/{postNo}")
+    @GetMapping("/delete/{postNo}")
     public ModelAndView doDelete(@PathVariable("postNo") Long postNo, HttpSession session) {
 
         UserLoginResponse user =
@@ -152,11 +166,28 @@ public class PostController {
         if (canNotModify(postNo, user)) {
             throw new ModifyAccessException();
         }
+
         postService.deletePost(postNo);
 
         return new ModelAndView("redirect:/post/posts");
     }
 
+
+    @GetMapping("/restore/{postNo}")
+    public ModelAndView doRestore(@PathVariable("postNo") Long postNo, HttpSession session) {
+
+        UserLoginResponse user = Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                .orElseThrow(NoAuthorizationException::new);
+
+        if(!user.isAdmin()) {
+            throw new ModifyAccessException();
+        }
+
+        postService.restorePost(postNo);
+
+        return new ModelAndView("redirect:/post/posts");
+
+    }
 
     private boolean canNotModify(Long postNo, UserLoginResponse user) {
         return !(user.isAdmin() || postService.isWriter(postNo, user.getUserNo()));

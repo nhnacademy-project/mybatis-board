@@ -21,10 +21,11 @@ public interface PostService {
 
     List<PostResponse> findAllPosts();
 
-    Page<PostResponse> findPagedPosts(int page, int totalPage);
+    Page<PostResponse> findPagedPosts(int page, int totalPage, boolean isFilter);
 
     int getTotalPage();
 
     boolean isWriter (Long postNo, Long userNo);
 
+    void restorePost(Long postNo);
 }
