@@ -13,6 +13,6 @@ public class InsertComment {
     public InsertComment(CommentRequest request) {
         this.content = request.getContent();
         this.userNo = request.getWriterNo();
-        this.postNo = request.getWriterNo();
+        this.postNo = request.getPostNo();
     }
 }

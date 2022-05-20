@@ -39,4 +39,10 @@ public class UserController {
 
         return mav;
     }
+
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpSession session) {
+        session.invalidate();
+        return new ModelAndView("redirect:/");
+    }
 }

@@ -5,8 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-<a href="/login">로그인</a>
-<br />
+<div th:if="${session.user == null}">
+    <a href="/login">로그인</a>
+</div>
+<div th:unless="${session.user == null}">
+    Hello, <span th:text="${session.user['name']}">name</span><br />
+    <a href="/logout">로그아웃</a>
+</div>
+
 <a href="/post/posts">게시글 목록</a>
 <br />
 </body>

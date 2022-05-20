@@ -14,10 +14,10 @@ import com.nhnacademy.jdbc.board.post.mapper.PostMapper;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +25,7 @@ public class DefaultPostService implements PostService {
 
     private final PostMapper postMapper;
 
+    @Transactional
     @Override
     public void insertPost(PostInsertRequest postInsertRequest) {
 
@@ -37,6 +38,7 @@ public class DefaultPostService implements PostService {
         postMapper.insertPost(post);
     }
 
+    @Transactional
     @Override
     public void modifyPost(PostModifyRequest postModifyRequest) {
 
@@ -50,6 +52,7 @@ public class DefaultPostService implements PostService {
         postMapper.modifyPostByNo(post);
     }
 
+    @Transactional
     @Override
     public void deletePost(Long postNo) {
         postMapper.deletePostByNo(postNo);
