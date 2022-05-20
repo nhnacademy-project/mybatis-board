@@ -10,9 +10,12 @@ import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
 import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.mapper.PostMapper;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +29,9 @@ public class DefaultPostService implements PostService {
     public void insertPost(PostInsertRequest postInsertRequest) {
 
         Post post = new Post(postInsertRequest.getUserNo()
-            , postInsertRequest.getTitle()
-            , postInsertRequest.getContent()
-            , new Date()
+                , postInsertRequest.getTitle()
+                , postInsertRequest.getContent()
+                , new Date()
         );
 
         postMapper.insertPost(post);
@@ -38,11 +41,11 @@ public class DefaultPostService implements PostService {
     public void modifyPost(PostModifyRequest postModifyRequest) {
 
         Post post = Post.builder()
-                        .postNo(postModifyRequest.getPostNo())
-                        .title(postModifyRequest.getTitle())
-                        .content(postModifyRequest.getContent())
-                        .modifyUserNo(postModifyRequest.getModifyUserNo())
-                        .build();
+                .postNo(postModifyRequest.getPostNo())
+                .title(postModifyRequest.getTitle())
+                .content(postModifyRequest.getContent())
+                .modifyUserNo(postModifyRequest.getModifyUserNo())
+                .build();
 
         postMapper.modifyPostByNo(post);
     }
@@ -55,30 +58,35 @@ public class DefaultPostService implements PostService {
     }
 
     @Override
+    public void restorePost(Long postNo) {
+        postMapper.restorePostsByNo(postNo);
+    }
+
+    @Override
     public PostResponse findPostByNo(Long postNo) {
         return postMapper.findPostById(postNo)
-                         .map(PostResponse::new)
-                         .orElseThrow(PostNotFoundException::new);
+                .map(PostResponse::new)
+                .orElseThrow(PostNotFoundException::new);
     }
 
     @Override
     public List<PostResponse> findNotDeletedPosts() {
         return postMapper.findNotDeletedPosts()
-                         .stream()
-                         .map(PostResponse::new)
-                         .collect(toList());
+                .stream()
+                .map(PostResponse::new)
+                .collect(toList());
     }
 
     @Override
     public List<PostResponse> findAllPosts() {
         return postMapper.findAllPosts()
-                         .stream()
-                         .map(PostResponse::new)
-                         .collect(toList());
+                .stream()
+                .map(PostResponse::new)
+                .collect(toList());
     }
 
     @Override
-    public Page<PostResponse> findPagedPosts(int page, int totalPage) {
+    public Page<PostResponse> findPagedPosts(int page, int totalPage, boolean isFilter) {
 
         if (page < 1) {
             page = 1;
@@ -89,21 +97,25 @@ public class DefaultPostService implements PostService {
         }
 
         Integer offset = 20 * (page - 1);
-        List<PostResponse> list = postMapper.findPagedPosts(offset)
-                                            .stream()
-                                            .map(PostResponse::new)
-                                            .collect(toList());
+        List<ReadPost> list;
+        if (isFilter) {
+            list = postMapper.findFilterPagedPosts(offset);
+        } else {
+            list = postMapper.findPagedPosts(offset);
+        }
 
         int start = ((page - 1) / 5) * 5 + 1;
         int end = Math.min(start + 4, totalPage);
 
         return Page.<PostResponse>builder()
-                   .pageList(list)
-                   .page(page)
-                   .start(start)
-                   .end(end)
-                   .totalPage(totalPage)
-                   .build();
+                .pageList(list.stream()
+                                .map(readPost -> new PostResponse(readPost))
+                                .collect(toList()))
+                .page(page)
+                .start(start)
+                .end(end)
+                .totalPage(totalPage)
+                .build();
     }
 
     @Override
@@ -115,7 +127,7 @@ public class DefaultPostService implements PostService {
     @Override
     public boolean isWriter(Long postNo, Long userNo) {
         ReadPost readPost = postMapper.findPostById(postNo)
-                                      .orElseThrow(PostNotFoundException::new);
+                .orElseThrow(PostNotFoundException::new);
         return Objects.equals(readPost.getWriterNo(), userNo);
     }
 }

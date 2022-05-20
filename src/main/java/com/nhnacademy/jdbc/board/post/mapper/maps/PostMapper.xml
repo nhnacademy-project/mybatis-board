@@ -86,6 +86,25 @@
         LIMIT 20 OFFSET #{offset}
     </select>
 
+    <select id="findFilterPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT
+            p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deletedAt'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+        FROM post p
+                 INNER JOIN user u ON p.writer_no = u.user_no AND p.delete_NY = 'N'
+        ORDER BY p.post_no
+            LIMIT 20 OFFSET #{offset}
+    </select>
+
     <update id="modifyPostByNo">
         UPDATE post
         set title         = #{title}
@@ -100,6 +119,11 @@
         SET delete_NY = 'Y'
         WHERE post_no = #{postNo}
     </update>
+    <update id="restorePostsByNo">
+        UPDATE post
+        SET delete_NY = 'N'
+        WHERE post_no = #{postNo}
+    </update>
 
 
     <select id="selectPageCount" resultType="java.lang.Integer">
@@ -109,5 +133,6 @@
             information_schema.tables
         WHERE table_schema = 'nhn_academy_17' AND table_name = 'post';
     </select>
+
 
 </mapper>
