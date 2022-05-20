@@ -4,6 +4,16 @@
     <style>
         tbody td:nth-child(3):hover {
             cursor: pointer;
+            color: gray;
+        }
+
+        .page td:hover {
+            cursor: pointer;
+            color: gray;
+        }
+
+        .selected {
+            color: gray;
         }
     </style>
     <meta charset="UTF-8">
@@ -14,14 +24,14 @@
 <table>
     <thead>
     <tr>
-        <th>게시물 번호</th>
+        <th>번호</th>
         <th>작성자</th>
         <th>제목</th>
         <th>작성일시</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="post : ${posts}">
+    <tr th:each="post : ${page.pageList}">
         <td th:text="${post.postNo}"></td>
         <td th:text="${post.writer}"></td>
         <td th:text="${post.title}"
@@ -30,5 +40,22 @@
     </tr>
     </tbody>
 </table>
+<br/>
+
+<table class="page">
+    <tr>
+        <td th:if="${page.start > 5}"
+            th:onclick="'location.href=\''+ @{|posts?page=${page.start - 1}|} + '\''">&lt;</td>
+
+        <td th:each="pageNum: ${#numbers.sequence(page.start, page.end)}"
+            th:text="${pageNum}"
+            th:classappend="${pageNum eq page.page ? 'selected' : ''}"
+            th:onclick="'location.href=\''+ @{|posts?page=${pageNum}|} + '\''"></td>
+
+        <td th:if="${page.end < page.totalPage}"
+            th:onclick="'location.href=\''+ @{|posts?page=${page.end + 1}|} + '\''">&gt;</td>
+    </tr>
+</table>
+
 </body>
 </html>

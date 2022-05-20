@@ -52,5 +52,4 @@ class PostControllerTest {
                .andExpect(status().isOk())
                .andExpect(view().name("post/post"));
     }
-
 }
