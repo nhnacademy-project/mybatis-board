@@ -30,7 +30,6 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
->>>>>>> upstream/develop
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no
         WHERE post_no = #{postNo}

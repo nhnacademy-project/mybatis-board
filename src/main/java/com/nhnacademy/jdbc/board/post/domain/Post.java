@@ -29,7 +29,6 @@ public class Post {
         this.content = content;
         this.createdAt = createdAt;
     }
-<<<<<<< HEAD
 
     @Builder
     public Post(Long postNo, String title, String content, Long modifyUserNo) {
@@ -38,6 +37,4 @@ public class Post {
         this.content = content;
         this.modifyUserNo = modifyUserNo;
     }
-=======
->>>>>>> upstream/develop
 }

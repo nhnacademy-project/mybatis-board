@@ -17,4 +17,5 @@ public interface PostMapper {
     List<ReadPost> findAllPosts();
 
     void modifyPostByNo(Post post);
+
 }
