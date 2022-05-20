@@ -9,11 +9,11 @@ import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
-import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -72,6 +72,7 @@ public class PostController {
 
         ModelAndView mav = new ModelAndView("post/post");
 
+        mav.addObject("comments", commentService.findComments(postNo));
         mav.addObject("post", postService.findPostByNo(postNo));
         return mav;
     }

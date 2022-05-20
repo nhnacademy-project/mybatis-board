@@ -9,5 +9,5 @@ public interface CommentMapper {
 
     void insertComment(InsertComment comment);
 
-    List<SelectComment> findComments(@Param("pageNo") Long pageNo);
+    List<SelectComment> findComments(@Param("postNo") Long postNo);
 }

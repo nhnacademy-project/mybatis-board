@@ -22,8 +22,8 @@ public class DefaultCommentService implements CommentService {
     }
 
     @Override
-    public List<CommentResponse> findComments(Long pageNo) {
-        return commentMapper.findComments(pageNo)
+    public List<CommentResponse> findComments(Long postNo) {
+        return commentMapper.findComments(postNo)
             .stream()
             .map(CommentResponse::new)
             .collect(toList());
