@@ -29,13 +29,6 @@ public class CommentController {
                                      @RequestParam("content") String content,
                                      HttpSession session) {
 
-        if (content.length() > 250) {
-            throw new ContentLengthOverException();
-        }
-
-        log.info("comment insert");
-        log.info("postno = {}", postNo);
-
         UserLoginResponse user =
             Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
                     .orElseThrow(NoAuthorizationException::new);
