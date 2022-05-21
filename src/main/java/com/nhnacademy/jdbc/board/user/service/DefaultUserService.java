@@ -23,4 +23,9 @@ public class DefaultUserService implements UserService {
 
         return new UserLoginResponse(user.getUserNo(),user.getName(), user.getUsername(), user.getAdminNY());
     }
+
+    @Override
+    public String findModifierNameByUserNo(Long modifyUserNo) {
+        return userMapper.findModifierNameByUserNo(modifyUserNo);
+    }
 }

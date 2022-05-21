@@ -43,20 +43,17 @@
         <td th:text="${post.createdAt}"></td>
         <th:block th:if="${isAdmin == true}">
             <td>
-                <button th:onclick="'location.href=\''+ @{|/post/restore/${post.postNo}|} + '\''">복구</button>
+                <button th:disabled="${#strings.equals(post.deleteNY, 'N')}" th:onclick="'location.href=\''+ @{|/post/restore/${post.postNo}|} + '\''">복구</button>
             </td>
             <td>
-                <button th:onclick="'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''">삭제</button>
+                <button th:disabled="${#strings.equals(post.deleteNY, 'Y')}" th:onclick="'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''">삭제</button>
             </td>
         </th:block>
     </tr>
     </tbody>
 </table>
 <br/>
-<h1 th:text="${session.user != null} and ${#strings.equals(session.user['adminNY'], 'Y')}"></h1>
-<h1 th:text="${session.user != null}"></h1>
-<h1 th:text="${#strings.equals(session.user['adminNY'], 'Y')}"></h1>
-<h1 th:text="${session.user['adminNY']}"></h1>
+
 <table class="page">
     <tr>
         <td th:if="${page.start > 5}"

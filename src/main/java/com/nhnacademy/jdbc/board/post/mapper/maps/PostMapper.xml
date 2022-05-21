@@ -76,7 +76,7 @@
             , p.title as 'title'
             , p.content as 'content'
             , p.created_at as 'createdAt'
-            , p.delete_NY as 'deletedAt'
+            , p.delete_NY as 'deleteNY'
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
@@ -95,7 +95,7 @@
             , p.title as 'title'
             , p.content as 'content'
             , p.created_at as 'createdAt'
-            , p.delete_NY as 'deletedAt'
+            , p.delete_NY as 'deleteNY'
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
@@ -107,7 +107,7 @@
 
     <update id="modifyPostByNo">
         UPDATE post
-        set title         = #{title}
+        SET title         = #{title}
           , content       = #{content}
           , modified_at   = now()
           , modify_user_no = #{modifyUserNo}

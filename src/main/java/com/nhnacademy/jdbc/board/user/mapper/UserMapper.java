@@ -7,4 +7,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper {
 
     Optional<User> loginUser(@Param("username") String username, @Param("password") String password);
+
+    String findModifierNameByUserNo(Long modifyUserNo);
 }
