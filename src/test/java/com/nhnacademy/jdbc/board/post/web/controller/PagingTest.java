@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import com.nhnacademy.jdbc.board.comment.service.CommentService;
+import com.nhnacademy.jdbc.board.like.service.LikesService;
 import com.nhnacademy.jdbc.board.post.domain.Page;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.DefaultPostService;
@@ -19,15 +20,13 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.servlet.http.HttpSession;
-
 public class PagingTest {
 
     MockMvc mockMvc;
     PostService postService;
     CommentService commentService;
-
     UserService userService;
+    LikesService likesService;
 
     @BeforeEach
     void setUp() {
@@ -35,7 +34,9 @@ public class PagingTest {
         commentService = mock(CommentService.class);
 
         userService = mock(UserService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService, commentService, userService)).build();
+        mockMvc = MockMvcBuilders
+            .standaloneSetup(new PostController(postService, commentService, userService, likesService))
+            .build();
     }
 
 
@@ -44,7 +45,6 @@ public class PagingTest {
     void paging() throws Exception {
 
         MockHttpSession session = new MockHttpSession();
-        PostResponse postResponse = mock(PostResponse.class);
 
         Page<PostResponse> page = mock(Page.class);
 
