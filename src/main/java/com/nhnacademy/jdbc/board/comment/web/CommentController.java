@@ -8,7 +8,6 @@ import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/comment")
 @RequiredArgsConstructor
-@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
@@ -32,9 +30,6 @@ public class CommentController {
         if (content.length() > 250) {
             throw new ContentLengthOverException();
         }
-
-        log.info("comment insert");
-        log.info("postno = {}", postNo);
 
         UserLoginResponse user =
             Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
