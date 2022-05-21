@@ -1,4 +1,4 @@
-package com.nhnacademy.jdbc.board;
+package com.nhnacademy.jdbc.board.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

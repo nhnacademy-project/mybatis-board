@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://kit.fontawesome.com/011a826b41.js" crossorigin="anonymous"></script>
     <title>Title</title>
 </head>
 <body>
@@ -23,6 +24,15 @@
         수정일: <span class="modifydate" th:text="${post.modifiedAt}">작성일</span>
     </p>
     </div>
+    <th:block th:if="${session.user != null}">
+        <i class="fa-solid fa-heart" style="color: red"
+           th:if="${isLike == true}"
+           th:onclick="'location.href=\''+ @{|/like/cancel/${post.postNo}|} + '\''"></i>
+        <i class="fa-regular fa-heart"
+           th:unless="${isLike == true}"
+           th:onclick="'location.href=\''+ @{|/like/register/${post.postNo}|} + '\''"></i>
+    </th:block>
+
     <div th:if="${session.user != null} and
                 (${post.username} == ${session.user['username']} or
                  ${session.user['adminNY']} == 'Y')">
@@ -39,7 +49,7 @@
 
 <div>
     <h3>댓글</h3>
-    <span th:if="${comments == null or comments.empty}">댓글을 달아주세요</span>
+    <span th:if="${comments == null or comments.empty}">댓글이 없습니다.</span>
     <th:block th:unless="${comments == null or comments.empty}">
         <table>
             <thead>

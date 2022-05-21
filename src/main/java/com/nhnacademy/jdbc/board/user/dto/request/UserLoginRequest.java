@@ -1,6 +1,6 @@
 package com.nhnacademy.jdbc.board.user.dto.request;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,9 +8,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserLoginRequest {
 
-    @NotNull
+    @NotBlank(message = "아이디를 입력해야 합니다.")
     private final String username;
 
-    @NotNull
+    @NotBlank(message = "비밀번호를 입력해야 합니다.")
     private final String password;
 }

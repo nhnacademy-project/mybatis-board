@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhnacademy.jdbc.board.like.mapper.LikesMapper">
+
+    <select id="selectLikes" resultType="com.nhnacademy.jdbc.board.like.domain.Likes">
+        SELECT *
+        FROM likes
+        WHERE post_no = #{postNo}
+          AND user_no = #{userNo}
+    </select>
+
+    <select id="findLikeList" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no AS 'postNo'
+            , u.user_no AS 'writerNo'
+            , u.username AS 'username'
+            , u.name AS 'writer'
+            , p.title AS 'title'
+            , p.content AS 'content'
+            , p.created_at AS 'createdAt'
+            , p.delete_NY AS 'deletedAt'
+            , p.file_path AS 'filePath'
+            , p.modify_user_no AS 'modifyUserNo'
+            , p.modified_at AS 'modifiedAt'
+        FROM (SELECT post_no
+              FROM likes l
+                       INNER JOIN user u
+                                  ON l.user_no = u.user_no
+                                      AND u.user_no = #{userNo}) ul
+                 INNER JOIN post p
+                            ON ul.post_no = p.post_no
+                 INNER JOIN user u
+                            ON p.writer_no = u.user_no;
+    </select>
+
+    <insert id="insertLikes">
+        INSERT INTO likes (post_no, user_no)
+        VALUES (#{postNo}, #{userNo})
+    </insert>
+
+    <delete id="deleteLikes">
+        DELETE
+        FROM likes
+        WHERE post_no = #{postNo}
+          AND user_no = #{userNo}
+    </delete>
+</mapper>
