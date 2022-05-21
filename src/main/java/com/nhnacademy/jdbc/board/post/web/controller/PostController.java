@@ -39,7 +39,6 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
     private final UserService userService;
-
     private final LikesService likesService;
 
     @GetMapping(value = "/write")

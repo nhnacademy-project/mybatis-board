@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import com.nhnacademy.jdbc.board.comment.service.CommentService;
+import com.nhnacademy.jdbc.board.like.service.LikesService;
 import com.nhnacademy.jdbc.board.post.domain.Page;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.DefaultPostService;
@@ -19,15 +20,13 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.servlet.http.HttpSession;
-
 public class PagingTest {
 
     MockMvc mockMvc;
     PostService postService;
     CommentService commentService;
-
     UserService userService;
+    LikesService likesService;
 
     @BeforeEach
     void setUp() {
@@ -35,7 +34,13 @@ public class PagingTest {
         commentService = mock(CommentService.class);
 
         userService = mock(UserService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService, commentService, userService,)).build();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService, commentService, userService, likesService)).build();
+
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new PostController(postService, commentService, userService, likesService))
+                .build();
+
     }
 
 
@@ -44,7 +49,6 @@ public class PagingTest {
     void paging() throws Exception {
 
         MockHttpSession session = new MockHttpSession();
-        PostResponse postResponse = mock(PostResponse.class);
 
         Page<PostResponse> page = mock(Page.class);
 
@@ -52,18 +56,18 @@ public class PagingTest {
         session.setAttribute("user", mockLoginUser);
 
         when(postService.getTotalPage()).thenReturn(1);
-        when(postService.findPagedPosts(anyInt(), anyInt(),anyBoolean())).thenReturn(page);
+        when(postService.findPagedPosts(anyInt(), anyInt(), anyBoolean())).thenReturn(page);
 
         mockMvc.perform(get("/post/posts").session(session))
                 .andExpect(status().isOk())
-               .andExpect(view().name("post/posts"));
+                .andExpect(view().name("post/posts"));
     }
 
     @Test
     @DisplayName("최소 페이지 미만 요청")
     void paging_lower_bound_error() throws Exception {
         mockMvc.perform(get("/post/posts?page=0"))
-               .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -72,7 +76,7 @@ public class PagingTest {
         int page = 10;
         when(postService.getTotalPage()).thenReturn(page - 1);
         mockMvc.perform(get("/post/posts?page=" + page))
-               .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection());
 
     }
 }

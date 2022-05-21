@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.nhnacademy.jdbc.board.config.RootConfig;
 import com.nhnacademy.jdbc.board.config.WebConfig;
+import com.nhnacademy.jdbc.board.like.domain.Likes;
 import com.nhnacademy.jdbc.board.like.service.LikesService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -78,6 +80,29 @@ class LikesControllerTest {
 
         mockMvc.perform(get("/like/register/{postNo}", 1)
                         .session(session))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @DisplayName("좋아요 목록이 없는 유저가 리스트를 조회할 경우")
+    void isNotExistLikes() throws Exception {
+
+        when(user.getUserNo()).thenReturn(2L);
+
+        mockMvc.perform(get("/like/cancel/" + 2)
+                        .session(session))
+                .andExpect(status().is3xxRedirection());
+
+    }
+
+    @Test
+    @DisplayName("좋아요 삭제하기")
+    @Rollback
+    void deleteLike() throws Exception {
+        when(user.getUserNo()).thenReturn(1L);
+
+        mockMvc.perform(get("/like/cancel/" + 1L)
+                .session(session))
                 .andExpect(status().is3xxRedirection());
     }
 

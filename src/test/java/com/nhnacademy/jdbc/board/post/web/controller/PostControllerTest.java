@@ -13,10 +13,8 @@ import com.nhnacademy.jdbc.board.config.WebConfig;
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
 import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
-import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
-import com.nhnacademy.jdbc.board.user.service.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +94,7 @@ class PostControllerTest {
         PostService postService = mock(PostService.class);
         PostInsertRequest postInsertRequest = mock(PostInsertRequest.class);
         BindingResult bindingResult = mock(BindingResult.class);
-        PostController postController = new PostController(postService,null ,null);
+        PostController postController = new PostController(postService,null ,null, null);
 
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -202,7 +200,7 @@ class PostControllerTest {
     void deleteUserThrowByModifyAccessException() throws Exception {
 
         PostService postService = mock(PostService.class);
-        PostController postController = new PostController(postService,null ,null);
+        PostController postController = new PostController(postService,null ,null, null);
 
         UserLoginResponse mockLoginUser = mock(UserLoginResponse.class);
         session.setAttribute("user", mockLoginUser);
@@ -234,7 +232,7 @@ class PostControllerTest {
     void retoreIsNotAdminModifyAccessException() throws Exception {
 
         PostService postService = mock(PostService.class);
-        PostController postController = new PostController(postService,null ,null);
+        PostController postController = new PostController(postService,null ,null, null);
 
         UserLoginResponse mockLoginUser = mock(UserLoginResponse.class);
         session.setAttribute("user", mockLoginUser);
