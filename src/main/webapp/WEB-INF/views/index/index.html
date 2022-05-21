@@ -10,6 +10,7 @@
 </div>
 <div th:unless="${session.user == null}">
     Hello, <span th:text="${session.user['name']}">name</span><br />
+    <a href="/like/list">좋아요 목록</a><br />
     <a href="/logout">로그아웃</a>
 </div>
 

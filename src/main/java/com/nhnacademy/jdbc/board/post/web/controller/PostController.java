@@ -4,24 +4,21 @@ import com.nhnacademy.jdbc.board.comment.service.CommentService;
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
 import com.nhnacademy.jdbc.board.exception.NoAuthorizationException;
 import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
+import com.nhnacademy.jdbc.board.like.service.LikesService;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
 import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
-
 import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,16 +27,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-
 @Slf4j
 @Controller
 @RequestMapping("/post")
 @RequiredArgsConstructor
-@Validated
 public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+
+    private final LikesService likesService;
 
     @GetMapping(value = "/write")
     public ModelAndView insert(PostInsertRequest postInsertRequest, HttpSession session) {
@@ -53,7 +50,7 @@ public class PostController {
 
     @PostMapping(value = "/write")
     public ModelAndView doInsert(@ModelAttribute @Valid PostInsertRequest postInsertRequest,
-                                 BindingResult bindingResult, HttpServletRequest request) {
+                                 final BindingResult bindingResult, HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
         UserLoginResponse userLoginResponse = (UserLoginResponse) session.getAttribute("user");
@@ -74,18 +71,28 @@ public class PostController {
 
         return mav;
     }
+
     @GetMapping("/{postNo}")
-    public ModelAndView post(@PathVariable("postNo") Long postNo) {
+    public ModelAndView post(@PathVariable("postNo") Long postNo, HttpSession session) {
 
         ModelAndView mav = new ModelAndView("post/post");
+        boolean isLike = false;
 
+        UserLoginResponse user = (UserLoginResponse) session.getAttribute("user");
+
+        if (Objects.nonNull(user)) {
+            isLike = likesService.findLikesByPostNoAndUserNo(postNo, user.getUserNo());
+        }
+
+        mav.addObject("isLike", isLike);
         mav.addObject("comments", commentService.findComments(postNo));
         mav.addObject("post", postService.findPostByNo(postNo));
         return mav;
     }
 
     @GetMapping("/posts")
-    public ModelAndView posts(@RequestParam(name = "page", required = false) Integer page, HttpSession httpSession) {
+    public ModelAndView posts(@RequestParam(name = "page", required = false) Integer page,
+                              HttpSession httpSession) {
 
         UserLoginResponse user = (UserLoginResponse) httpSession.getAttribute("user");
 
@@ -111,6 +118,7 @@ public class PostController {
         }
         return mav;
     }
+
     private boolean isLoginAdmin(UserLoginResponse user) {
         return Objects.nonNull(user) && user.isAdmin();
     }
@@ -172,14 +180,14 @@ public class PostController {
         return new ModelAndView("redirect:/post/posts");
     }
 
-
     @GetMapping("/restore/{postNo}")
     public ModelAndView doRestore(@PathVariable("postNo") Long postNo, HttpSession session) {
 
-        UserLoginResponse user = Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
-                .orElseThrow(NoAuthorizationException::new);
+        UserLoginResponse user =
+            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                    .orElseThrow(NoAuthorizationException::new);
 
-        if(!user.isAdmin()) {
+        if (!user.isAdmin()) {
             throw new ModifyAccessException();
         }
 
