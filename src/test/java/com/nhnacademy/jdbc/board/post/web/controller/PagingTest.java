@@ -35,7 +35,7 @@ public class PagingTest {
         commentService = mock(CommentService.class);
 
         userService = mock(UserService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService, commentService, userService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService, commentService, userService,)).build();
     }
 
 
