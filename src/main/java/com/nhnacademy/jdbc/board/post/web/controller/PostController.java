@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import com.nhnacademy.jdbc.board.user.service.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final UserService userService;
 
     @GetMapping(value = "/write")
     public ModelAndView insert(PostInsertRequest postInsertRequest, HttpSession session) {
@@ -78,9 +80,14 @@ public class PostController {
     public ModelAndView post(@PathVariable("postNo") Long postNo) {
 
         ModelAndView mav = new ModelAndView("post/post");
-
+        PostResponse post = postService.findPostByNo(postNo);
+        Long modifyUserNo = post.getModifyUserNo();
+        if (Objects.nonNull(modifyUserNo)) {
+            String modifierName = userService.findModifierNameByUserNo(modifyUserNo);
+            mav.addObject("modifierName", modifierName);
+        }
         mav.addObject("comments", commentService.findComments(postNo));
-        mav.addObject("post", postService.findPostByNo(postNo));
+        mav.addObject("post",post);
         return mav;
     }
 
