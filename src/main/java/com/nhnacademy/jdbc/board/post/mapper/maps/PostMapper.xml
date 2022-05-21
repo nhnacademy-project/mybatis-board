@@ -61,17 +61,17 @@
     </select>
 
     <select id="findPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT p.post_no AS 'postNo'
-            , u.user_no AS 'writerNo'
-            , u.username AS 'username'
-            , u.name AS 'writer'
-            , p.title AS 'title'
-            , p.content AS 'content'
-            , p.created_at AS 'createdAt'
-            , p.delete_NY AS 'deletedAt'
-            , p.file_path AS 'filePath'
-            , p.modify_user_no AS 'modifyUserNo'
-            , p.modified_at AS 'modifiedAt'
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
         FROM post p
                  INNER JOIN user u
                             ON p.writer_no = u.user_no
@@ -80,17 +80,18 @@
     </select>
 
     <select id="findFilterPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT p.post_no AS 'postNo'
-            , u.user_no AS 'writerNo'
-            , u.username AS 'username'
-            , u.name AS 'writer'
-            , p.title AS 'title'
-            , p.content AS 'content'
-            , p.created_at AS 'createdAt'
-            , p.delete_NY AS 'deletedAt'
-            , p.file_path AS 'filePath'
-            , p.modify_user_no AS 'modifyUserNo'
-            , p.modified_at AS 'modifiedAt'
+        SELECT
+            p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no AND p.delete_NY = 'N'
         ORDER BY p.post_no LIMIT 20

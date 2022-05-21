@@ -43,10 +43,10 @@
         <td th:text="${post.createdAt}"></td>
         <th:block th:if="${isAdmin == true}">
             <td>
-                <button th:onclick="'location.href=\''+ @{|/post/restore/${post.postNo}|} + '\''">복구</button>
+                <button th:disabled="${#strings.equals(post.deleteNY, 'N')}" th:onclick="'location.href=\''+ @{|/post/restore/${post.postNo}|} + '\''">복구</button>
             </td>
             <td>
-                <button th:onclick="'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''">삭제</button>
+                <button th:disabled="${#strings.equals(post.deleteNY, 'Y')}" th:onclick="'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''">삭제</button>
             </td>
         </th:block>
     </tr>

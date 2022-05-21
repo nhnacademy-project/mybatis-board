@@ -15,6 +15,15 @@
     <p>
         작성일: <span class="date" th:text="${post.createdAt}">작성일</span>
     </p>
+
+    <div th:if="${post.modifyUserNo != null} ">
+    <p>
+        수정자: <span class="modifier" th:text="${modifierName}">수정자</span>
+    </p>
+    <p>
+        수정일: <span class="modifydate" th:text="${post.modifiedAt}">작성일</span>
+    </p>
+    </div>
     <th:block th:if="${session.user != null}">
         <i class="fa-solid fa-heart" style="color: red"
            th:if="${isLike == true}"
@@ -29,9 +38,7 @@
                  ${session.user['adminNY']} == 'Y')">
 
         <button th:onclick="'location.href=\''+ @{|/post/modify/${post.postNo}|} + '\''">수정</button>&nbsp;
-        <form th:action="@{|delete/${post.postNo}|}" method="post">
-            <input type="submit" value="삭제"/>
-        </form>
+        <button th:onclick="'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''">삭제</button>
     </div>
     <br/>
 
