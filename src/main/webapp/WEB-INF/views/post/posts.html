@@ -53,10 +53,7 @@
     </tbody>
 </table>
 <br/>
-<h1 th:text="${session.user != null} and ${#strings.equals(session.user['adminNY'], 'Y')}"></h1>
-<h1 th:text="${session.user != null}"></h1>
-<h1 th:text="${#strings.equals(session.user['adminNY'], 'Y')}"></h1>
-<h1 th:text="${session.user['adminNY']}"></h1>
+
 <table class="page">
     <tr>
         <td th:if="${page.start > 5}"

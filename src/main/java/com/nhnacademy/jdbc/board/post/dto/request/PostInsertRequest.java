@@ -11,7 +11,6 @@ import lombok.Setter;
 public class PostInsertRequest {
 
     @Setter
-    @NotNull
     private Long userNo;
 
     @NotNull
