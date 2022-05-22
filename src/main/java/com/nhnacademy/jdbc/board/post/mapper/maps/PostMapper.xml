@@ -27,40 +27,6 @@
         WHERE post_no = #{postNo}
     </select>
 
-    <select id="findAllPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT p.post_no AS 'postNo'
-            , u.user_no AS 'writerNo'
-            , u.username AS 'username'
-            , u.name AS 'writer'
-            , p.title AS 'title'
-            , p.content AS 'content'
-            , p.created_at AS 'createdAt'
-            , p.delete_NY AS 'deletedAt'
-            , p.file_path AS 'filePath'
-            , p.modify_user_no AS 'modifyUserNo'
-            , p.modified_at AS 'modifiedAt'
-        FROM post p
-                 INNER JOIN user u ON p.writer_no = u.user_no
-    </select>
-
-    <select id="findNotDeletedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT p.post_no AS 'postNo'
-            , u.user_no AS 'writerNo'
-            , u.username AS 'username'
-            , u.name AS 'writer'
-            , p.title AS 'title'
-            , p.content AS 'content'
-            , p.created_at AS 'createdAt'
-            , p.delete_NY AS 'deletedAt'
-            , p.file_path AS 'filePath'
-            , p.modify_user_no AS 'modifyUserNo'
-            , p.modified_at AS 'modifiedAt'
-        FROM post p
-                 INNER JOIN user u
-                            ON p.writer_no = u.user_no
-        WHERE p.delete_NY = 'N'
-    </select>
-
     <select id="findPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
         SELECT p.post_no as 'postNo'
             , u.user_no as 'writerNo'
@@ -73,6 +39,10 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
         FROM post p
                  INNER JOIN user u
                             ON p.writer_no = u.user_no
@@ -92,6 +62,10 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no AND p.delete_NY = 'N'
         ORDER BY p.post_no LIMIT 20
@@ -138,6 +112,10 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
         FROM (SELECT *
               FROM post
               WHERE delete_NY = 'N'
@@ -158,6 +136,10 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
         FROM (SELECT *
               FROM post
               WHERE title LIKE CONCAT('%', #{search}, '%')) p

@@ -1,6 +1,5 @@
 package com.nhnacademy.jdbc.board.config;
 
-import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 import javax.servlet.Filter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -31,9 +30,9 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         characterEncodingFilter.setForceEncoding(true);
         HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
 
-        XssEscapeServletFilter xssEscapeServletFilter = new XssEscapeServletFilter();
+        XssFilter xssFilter = new XssFilter();
 
-        return new Filter[] {characterEncodingFilter, hiddenHttpMethodFilter};
+        return new Filter[] {characterEncodingFilter, hiddenHttpMethodFilter, xssFilter};
     }
 
     @Override
