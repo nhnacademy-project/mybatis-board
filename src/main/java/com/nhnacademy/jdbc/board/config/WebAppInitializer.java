@@ -1,27 +1,32 @@
 package com.nhnacademy.jdbc.board.config;
 
+import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
-import javax.servlet.Filter;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{com.nhnacademy.jdbc.board.config.RootConfig.class};
+        return new Class[] {com.nhnacademy.jdbc.board.config.RootConfig.class};
     }
+
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{ WebConfig.class };
+        return new Class[] {WebConfig.class};
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"};
+        return new String[] {"/"};
     }
 
     @Override
@@ -31,7 +36,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         characterEncodingFilter.setForceEncoding(true);
         HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
 
-        return new Filter[]{characterEncodingFilter, hiddenHttpMethodFilter};
+        return new Filter[] {characterEncodingFilter, hiddenHttpMethodFilter};
     }
 
     @Override
@@ -40,5 +45,13 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
             (DispatcherServlet) super.createDispatcherServlet(servletAppContext);
         dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
         return dispatcherServlet;
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        FilterRegistration.Dynamic xssFilter =
+            servletContext.addFilter("xssFilter", new XssEscapeServletFilter());
+        xssFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+        super.onStartup(servletContext);
     }
 }

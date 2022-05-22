@@ -49,7 +49,11 @@ public class PostController {
             throw new NoAuthorizationException();
         }
 
-        return new ModelAndView("post/post-form").addObject("post", postInsertRequest);
+        ModelAndView mav = new ModelAndView("post/post-form");
+
+        mav.addObject("post", postInsertRequest);
+        mav.addObject("url", "write");
+        return mav;
     }
 
     @PostMapping(value = "/write")
@@ -70,7 +74,6 @@ public class PostController {
         postInsertRequest.setUserNo(userLoginResponse.getUserNo());
 
         ModelAndView mav = new ModelAndView("redirect:posts");
-        mav.addObject("url", "write");
         postService.insertPost(postInsertRequest);
 
         return mav;
