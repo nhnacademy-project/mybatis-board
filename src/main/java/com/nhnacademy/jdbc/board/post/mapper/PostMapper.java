@@ -28,4 +28,8 @@ public interface PostMapper {
     Integer selectPageCount();
 
     void restorePostsByNo(Long postNo);
+
+    List<ReadPost> findSearchFilterPagedPosts(@Param("offset") Integer offset, @Param("search") String search);
+
+    List<ReadPost> findSearchPagedPosts(@Param("offset") Integer offset, @Param("search") String search);
 }
