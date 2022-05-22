@@ -23,6 +23,7 @@
 <a href="/">HOME</a>
 
 <button th:onclick="'location.href=\''+ @{write} + '\''">게시물 작성</button>
+
 <table th:with="isAdmin = ${session.user != null} and ${#strings.equals(session.user['adminNY'], 'Y')}">
     <thead>
     <tr>
@@ -54,7 +55,7 @@
 </table>
 <br/>
 
-<table class="page">
+<table class="page" th:if="${search != true}">
     <tr>
         <td th:if="${page.start > 5}"
             th:onclick="'location.href=\''+ @{|posts?page=${page.start - 1}|} + '\''">&lt;
@@ -70,6 +71,11 @@
         </td>
     </tr>
 </table>
+    <form th:action="@{search}">
+        <input type="text" name="search">
+        <button>검색</button>
+    </form><br />
+
 
 </body>
 </html>

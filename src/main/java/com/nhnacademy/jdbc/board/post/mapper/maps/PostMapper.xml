@@ -21,7 +21,8 @@
             , p.file_path AS 'filePath'
             , p.modify_user_no AS 'modifyUserNo'
             , p.modified_at AS 'modifiedAt'
-        FROM post p INNER JOIN user u
+        FROM post p
+                 INNER JOIN user u
                             ON p.writer_no = u.user_no
         WHERE post_no = #{postNo}
     </select>
@@ -80,8 +81,7 @@
     </select>
 
     <select id="findFilterPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
-        SELECT
-            p.post_no as 'postNo'
+        SELECT p.post_no as 'postNo'
             , u.user_no as 'writerNo'
             , u.username as 'username'
             , u.name as 'writer'
@@ -126,5 +126,39 @@
           AND table_name = 'post';
     </select>
 
+    <select id="findSearchPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+        FROM (select * from post where delete_NY = 'N' AND title like CONCAT('%',#{search},'%')) p
+                 INNER JOIN user u ON p.writer_no = u.user_no
+        ORDER BY p.post_no LIMIT 20
+        OFFSET #{offset}
+    </select>
 
+    <select id="findSearchFilterPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+        FROM (select * from post where title like CONCAT('%',#{search},'%')) p
+                 INNER JOIN user u ON p.writer_no = u.user_no
+          ORDER BY p.post_no LIMIT 20
+          OFFSET #{offset}
+    </select>
 </mapper>
