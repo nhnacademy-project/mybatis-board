@@ -1,10 +1,9 @@
 package com.nhnacademy.jdbc.board.config;
 
-import javax.servlet.Filter
+import javax.servlet.Filter;
 import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -38,9 +37,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         characterEncodingFilter.setForceEncoding(true);
         HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
 
-        XssFilter xssFilter = new XssFilter();
 
-        return new Filter[] {characterEncodingFilter, hiddenHttpMethodFilter, xssFilter};
+        return new Filter[] {characterEncodingFilter, hiddenHttpMethodFilter};
     }
 
     @Override
@@ -51,11 +49,4 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         return dispatcherServlet;
     }
 
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        FilterRegistration.Dynamic xssFilter =
-            servletContext.addFilter("xssFilter", new XssEscapeServletFilter());
-        xssFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-        super.onStartup(servletContext);
-    }
 }
