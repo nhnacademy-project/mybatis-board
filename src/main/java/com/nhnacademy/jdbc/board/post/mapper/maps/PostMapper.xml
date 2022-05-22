@@ -112,12 +112,12 @@
         SET delete_NY = 'Y'
         WHERE post_no = #{postNo}
     </update>
+
     <update id="restorePostsByNo">
         UPDATE post
         SET delete_NY = 'N'
         WHERE post_no = #{postNo}
     </update>
-
 
     <select id="selectPageCount" resultType="java.lang.Integer">
         SELECT table_rows
@@ -138,10 +138,12 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
-        FROM (select * from post where delete_NY = 'N' AND title like CONCAT('%',#{search},'%')) p
+        FROM (SELECT *
+              FROM post
+              WHERE delete_NY = 'N'
+                AND title LIKE CONCAT('%', #{search}, '%')) p
                  INNER JOIN user u ON p.writer_no = u.user_no
-        ORDER BY p.post_no LIMIT 20
-        OFFSET #{offset}
+        ORDER BY p.post_no
     </select>
 
     <select id="findSearchFilterPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
@@ -156,9 +158,10 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
-        FROM (select * from post where title like CONCAT('%',#{search},'%')) p
+        FROM (SELECT *
+              FROM post
+              WHERE title LIKE CONCAT('%', #{search}, '%')) p
                  INNER JOIN user u ON p.writer_no = u.user_no
-          ORDER BY p.post_no LIMIT 20
-          OFFSET #{offset}
+        ORDER BY p.post_no
     </select>
 </mapper>
