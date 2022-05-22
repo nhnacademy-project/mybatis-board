@@ -66,6 +66,11 @@ public class DefaultPostService implements PostService {
     }
 
     @Override
+    public void increaseViewCount(Long postNo) {
+        postMapper.increaseViewCount(postNo);
+    }
+
+    @Override
     public Page<PostResponse> findSearchPagedPosts(Integer page, int totalPage, boolean isFilter, String search) {
 
         if (page < 1) {
@@ -145,7 +150,7 @@ public class DefaultPostService implements PostService {
 
         return Page.<PostResponse>builder()
                 .pageList(list.stream()
-                        .map(readPost -> new PostResponse(readPost))
+                        .map(PostResponse::new)
                         .collect(toList()))
                 .page(page)
                 .start(start)

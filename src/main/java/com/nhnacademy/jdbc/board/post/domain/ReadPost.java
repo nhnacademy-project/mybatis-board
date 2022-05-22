@@ -22,5 +22,6 @@ public class ReadPost {
     private String filePath;
     private Long modifyUserNo;
     private Date modifiedAt;
+    private Long viewCount;
     private Integer commentCount;
 }

@@ -15,6 +15,9 @@
     <p>
         작성일: <span th:text="${post.createdAt}">작성일</span>
     </p>
+    <p>
+        조회수 : <span th:text="${post.viewCount}"></span>
+    </p>
 
     <div th:if="${post.modifyUserNo != null} ">
     <p>

@@ -29,5 +29,7 @@ public interface PostService {
 
     void restorePost(Long postNo);
 
+    void increaseViewCount(Long postNo);
+
     Page<PostResponse> findSearchPagedPosts(Integer page, int totalPage, boolean isFilter, String search);
 }

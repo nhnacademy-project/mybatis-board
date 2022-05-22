@@ -21,6 +21,42 @@
             , p.file_path AS 'filePath'
             , p.modify_user_no AS 'modifyUserNo'
             , p.modified_at AS 'modifiedAt'
+            , p.view_count as 'viewCount'
+        FROM post p INNER JOIN user u
+                            ON p.writer_no = u.user_no
+        WHERE post_no = #{postNo}
+    </select>
+
+    <select id="findAllPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no AS 'postNo'
+            , u.user_no AS 'writerNo'
+            , u.username AS 'username'
+            , u.name AS 'writer'
+            , p.title AS 'title'
+            , p.content AS 'content'
+            , p.created_at AS 'createdAt'
+            , p.delete_NY AS 'deletedAt'
+            , p.file_path AS 'filePath'
+            , p.modify_user_no AS 'modifyUserNo'
+            , p.modified_at AS 'modifiedAt'
+            , p.view_count as 'viewCount'
+        FROM post p
+                 INNER JOIN user u ON p.writer_no = u.user_no
+    </select>
+
+    <select id="findNotDeletedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no AS 'postNo'
+            , u.user_no AS 'writerNo'
+            , u.username AS 'username'
+            , u.name AS 'writer'
+            , p.title AS 'title'
+            , p.content AS 'content'
+            , p.created_at AS 'createdAt'
+            , p.delete_NY AS 'deletedAt'
+            , p.file_path AS 'filePath'
+            , p.modify_user_no AS 'modifyUserNo'
+            , p.modified_at AS 'modifiedAt'
+            , p.view_count as 'viewCount'
         FROM post p
                  INNER JOIN user u
                             ON p.writer_no = u.user_no
@@ -39,6 +75,7 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , p.view_count as 'viewCount'
             , (select count(*)
                from comment c
                where post_no = p.post_no
@@ -62,6 +99,7 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , p.view_count as 'viewCount'
             , (select count(*)
                from comment c
                where post_no = p.post_no
@@ -91,6 +129,11 @@
         UPDATE post
         SET delete_NY = 'N'
         WHERE post_no = #{postNo}
+    </update>
+    <update id="increaseViewCount">
+        UPDATE post
+        SET view_count = view_count+1
+        WHERE post_no=#{postNo}
     </update>
 
     <select id="selectPageCount" resultType="java.lang.Integer">

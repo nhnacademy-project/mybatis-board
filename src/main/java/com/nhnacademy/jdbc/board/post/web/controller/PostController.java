@@ -11,9 +11,15 @@ import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+
 import java.util.Objects;
 import java.util.Optional;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -80,11 +86,13 @@ public class PostController {
     }
 
     @GetMapping("/{postNo}")
-    public ModelAndView post(@PathVariable("postNo") Long postNo, HttpSession session) {
+    public ModelAndView post(@PathVariable("postNo") Long postNo, HttpServletRequest request, HttpServletResponse response) {
 
+        addViewedPostNoToCookie(request,response,String.valueOf(postNo));
         ModelAndView mav = new ModelAndView("post/post");
 
         PostResponse post = postService.findPostByNo(postNo);
+
         Long modifyUserNo = post.getModifyUserNo();
         if (Objects.nonNull(modifyUserNo)) {
             String modifierName = userService.findModifierNameByUserNo(modifyUserNo);
@@ -92,6 +100,8 @@ public class PostController {
         }
 
         boolean isLike = false;
+
+        HttpSession session = request.getSession();
 
         UserLoginResponse user = (UserLoginResponse) session.getAttribute("user");
 
@@ -101,9 +111,52 @@ public class PostController {
 
         mav.addObject("isLike", isLike);
         mav.addObject("comments", commentService.findComments(postNo));
-        mav.addObject("post", post);
+        mav.addObject("post",post);
+
         return mav;
     }
+
+    private void addViewedPostNoToCookie(final HttpServletRequest request, final HttpServletResponse response, final String postNo) {
+        Cookie accumulateNttIdCookie = Arrays
+                .stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("view-count-cookie"))
+                .findFirst()
+                .orElseGet(() -> {
+                    Cookie cookie = createAccNttIdCookie(postNo);    // 조회수 중복 방지용 쿠키 생성
+                    response.addCookie(cookie);                        // 생성한 쿠키를 response에 담는다.
+                    postService.increaseViewCount(Long.parseLong(postNo));            // 조회수 증가 쿼리 수행
+                    return cookie;
+                });
+
+        // 한번이라도 조회한 게시물에 대해서는 쿠키값에 해당 게시물의 nttId가 저장된다.
+        // 서로 다른 nttId에 대해서는 "/" 로 구분한다.
+        // ex) 000000000891/000000000890/000000000889
+        String cookieValue = accumulateNttIdCookie.getValue();
+
+        if(!cookieValue.contains(postNo)) {
+            String newCookieValue = cookieValue + "/" + postNo;
+            accumulateNttIdCookie.setMaxAge(getRemainSecondForTomorrow());
+            postService.increaseViewCount(Long.parseLong(postNo));            // 조회수 증가 쿼리 수행
+        }
+    }
+
+    private Cookie createAccNttIdCookie(String cookieValue) {
+        Cookie cookie = new Cookie("view-count-cookie", String.valueOf(cookieValue));
+        cookie.setComment("조회수 중복 증가 방지 쿠키");    // 쿠키 용도 설명 기재
+        cookie.setMaxAge(getRemainSecondForTomorrow());             // 하루를 준다.
+        cookie.setHttpOnly(true);                // 클라이언트 단에서 javascript로 조작 불가
+        return cookie;
+    }
+
+    // 다음 날 정각까지 남은 시간(초)
+    private int getRemainSecondForTomorrow() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tomorrow = LocalDateTime.now()
+                .plusDays(1L)
+                .truncatedTo(ChronoUnit.DAYS);
+        return (int) now.until(tomorrow, ChronoUnit.SECONDS);
+    }
+
 
     @GetMapping("/posts")
     public ModelAndView posts(@RequestParam(name = "page", required = false) Integer page,

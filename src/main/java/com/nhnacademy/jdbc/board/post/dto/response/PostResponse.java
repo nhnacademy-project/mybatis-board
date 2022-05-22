@@ -22,6 +22,7 @@ public class PostResponse {
     private String filePath;
     private Long modifyUserNo;
     private Date modifiedAt;
+    private Long viewCount;
     private Integer commentCount;
 
     public PostResponse(ReadPost post) {
@@ -36,11 +37,8 @@ public class PostResponse {
         this.filePath = post.getFilePath();
         this.modifyUserNo = post.getModifyUserNo();
         this.modifiedAt = post.getModifiedAt();
+        this.viewCount = post.getViewCount();
         this.commentCount = Optional.ofNullable(post.getCommentCount())
                                     .orElse(0);
-    }
-
-    public boolean isDeleted() {
-        return deleteNY == Post.DELETED;
     }
 }

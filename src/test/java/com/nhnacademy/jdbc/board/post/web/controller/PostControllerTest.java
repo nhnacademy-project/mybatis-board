@@ -95,7 +95,7 @@ class PostControllerTest {
         PostService postService = mock(PostService.class);
         PostInsertRequest postInsertRequest = mock(PostInsertRequest.class);
         BindingResult bindingResult = mock(BindingResult.class);
-        PostController postController = new PostController(postService, null, null, null);
+        PostController postController = new PostController(postService,null ,null,null);
 
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -201,7 +201,7 @@ class PostControllerTest {
     void deleteUserThrowByModifyAccessException() throws Exception {
 
         PostService postService = mock(PostService.class);
-        PostController postController = new PostController(postService, null, null, null);
+        PostController postController = new PostController(postService,null ,null,null);
 
         UserLoginResponse mockLoginUser = mock(UserLoginResponse.class);
         session.setAttribute("user", mockLoginUser);
@@ -233,7 +233,7 @@ class PostControllerTest {
     void restoreIsNotAdminModifyAccessException() throws Exception {
 
         PostService postService = mock(PostService.class);
-        PostController postController = new PostController(postService, null, null, null);
+        PostController postController = new PostController(postService,null ,null,null);
 
         UserLoginResponse mockLoginUser = mock(UserLoginResponse.class);
         session.setAttribute("user", mockLoginUser);
