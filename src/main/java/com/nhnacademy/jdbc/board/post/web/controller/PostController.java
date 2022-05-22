@@ -10,6 +10,10 @@ import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
+import com.nhnacademy.jdbc.board.user.service.UserService;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,10 +25,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
-import com.nhnacademy.jdbc.board.user.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
@@ -63,26 +64,38 @@ public class PostController {
     }
 
     @PostMapping(value = "/write")
-    public ModelAndView doInsert(@ModelAttribute @Valid PostInsertRequest postInsertRequest,
-                                 final BindingResult bindingResult, HttpServletRequest request) {
+    public ModelAndView doInsert(@ModelAttribute PostInsertRequest postInsertRequest,
+                                 HttpServletRequest request) throws IOException {
 
-        HttpSession session = request.getSession(true);
-        UserLoginResponse userLoginResponse = (UserLoginResponse) session.getAttribute("user");
+        UserLoginResponse userLoginResponse =
+            Optional.ofNullable((UserLoginResponse) request.getSession().getAttribute("user"))
+                    .orElseThrow(NoAuthorizationException::new);
 
         if (Objects.isNull(userLoginResponse)) {
             throw new NoAuthorizationException();
         }
 
-        if (bindingResult.hasErrors()) {
-            throw new ValidationFailedException(bindingResult);
-        }
-
         postInsertRequest.setUserNo(userLoginResponse.getUserNo());
 
+//        if (bindingResult.hasErrors()) {
+//            throw new ValidationFailedException(bindingResult);
+//        }
         ModelAndView mav = new ModelAndView("redirect:posts");
         postService.insertPost(postInsertRequest);
 
-        return mav;
+        MultipartFile file = postInsertRequest.getFile();
+
+        if (Objects.nonNull(file)) {
+            String path = request.getServletContext().getRealPath("/WEB-INF/upload/");
+            log.info("file is not null");
+            log.info("file name = {}", file.getOriginalFilename());
+            file.transferTo(new File(path  + file.getOriginalFilename()));
+            postService.insertPost(postInsertRequest);
+        } else {
+            postService.insertPost(postInsertRequest);
+        }
+
+        return new ModelAndView("redirect:posts");
     }
 
     @GetMapping("/{postNo}")
@@ -111,6 +124,7 @@ public class PostController {
 
         mav.addObject("isLike", isLike);
         mav.addObject("comments", commentService.findComments(postNo));
+
         mav.addObject("post",post);
 
         return mav;
@@ -160,9 +174,9 @@ public class PostController {
 
     @GetMapping("/posts")
     public ModelAndView posts(@RequestParam(name = "page", required = false) Integer page,
-                              HttpSession httpSession) {
+                              HttpSession session) {
 
-        UserLoginResponse user = (UserLoginResponse) httpSession.getAttribute("user");
+        UserLoginResponse user = (UserLoginResponse) session.getAttribute("user");
 
         page = Optional.ofNullable(page).orElse(1);
 

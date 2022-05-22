@@ -1,7 +1,8 @@
 package com.nhnacademy.jdbc.board.post.mapper;
 
-import com.nhnacademy.jdbc.board.post.domain.DeletePost;
 import com.nhnacademy.jdbc.board.post.domain.Post;
+import com.nhnacademy.jdbc.board.post.domain.PostInsert;
+import com.nhnacademy.jdbc.board.post.domain.PostInsertWithFile;
 import com.nhnacademy.jdbc.board.post.domain.ReadPost;
 import java.util.List;
 import java.util.Optional;
@@ -9,13 +10,11 @@ import org.apache.ibatis.annotations.Param;
 
 public interface PostMapper {
 
-    void insertPost(Post post);
+    void insertPost(PostInsert post);
+
+    void insertWithFile(PostInsertWithFile post);
 
     Optional<ReadPost> findPostById(@Param("postNo") Long postNo);
-
-    List<ReadPost> findNotDeletedPosts();
-
-    List<ReadPost> findAllPosts();
 
     List<ReadPost> findPagedPosts(@Param("offset") Integer offset);
 
