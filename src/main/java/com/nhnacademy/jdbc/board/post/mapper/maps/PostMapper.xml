@@ -123,7 +123,7 @@
         SELECT table_rows
         FROM information_schema.tables
         WHERE table_schema = 'nhn_academy_17'
-          AND table_name = 'post';
+          AND table_name = 'post'
     </select>
 
 
