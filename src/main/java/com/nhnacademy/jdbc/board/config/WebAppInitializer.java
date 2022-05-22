@@ -1,12 +1,7 @@
 package com.nhnacademy.jdbc.board.config;
 
 import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
-import java.util.EnumSet;
-import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
@@ -36,6 +31,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         characterEncodingFilter.setForceEncoding(true);
         HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
 
+        XssEscapeServletFilter xssEscapeServletFilter = new XssEscapeServletFilter();
+
         return new Filter[] {characterEncodingFilter, hiddenHttpMethodFilter};
     }
 
@@ -45,13 +42,5 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
             (DispatcherServlet) super.createDispatcherServlet(servletAppContext);
         dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
         return dispatcherServlet;
-    }
-
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        FilterRegistration.Dynamic xssFilter =
-            servletContext.addFilter("xssFilter", new XssEscapeServletFilter());
-        xssFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-        super.onStartup(servletContext);
     }
 }
