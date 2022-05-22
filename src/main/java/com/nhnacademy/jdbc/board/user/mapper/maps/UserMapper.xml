@@ -5,9 +5,14 @@
 
 <mapper namespace="com.nhnacademy.jdbc.board.user.mapper.UserMapper">
 
-    <select id="selectUser" resultType="com.nhnacademy.jdbc.board.user.domain.User">
+    <select id="loginUser" resultType="com.nhnacademy.jdbc.board.user.domain.User">
         select *
         from user
         where username = #{username} and password = #{password}
+    </select>
+    <select id="findModifierNameByUserNo" resultType="java.lang.String">
+        select name
+        from user
+        where user_no = #{modifyUserNo}
     </select>
 </mapper>

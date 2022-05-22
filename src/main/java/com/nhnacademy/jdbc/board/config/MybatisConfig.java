@@ -1,6 +1,8 @@
 package com.nhnacademy.jdbc.board.config;
 
 import com.p6spy.engine.spy.P6DataSource;
+import java.io.IOException;
+import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -9,15 +11,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import javax.sql.DataSource;
-import java.io.IOException;
 
 @Configuration
-@MapperScan(basePackages = "**.mapper.**",  sqlSessionFactoryRef = "sqlSessionFactoryBean")
+@MapperScan(basePackages = "**.mapper.**", sqlSessionFactoryRef = "sqlSessionFactoryBean")
 public class MybatisConfig {
 
     @Bean
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         BasicDataSource basicDataSource = new BasicDataSource();
         basicDataSource.setDriverClassName(com.mysql.cj.jdbc.Driver.class.getName());
         basicDataSource.setUrl("jdbc:mysql://133.186.211.156:3306/nhn_academy_17");
@@ -29,7 +29,7 @@ public class MybatisConfig {
     }
 
     @Bean
-    public DataSource logDataSource(){
+    public DataSource logDataSource() {
         return new P6DataSource(dataSource());
     }
 

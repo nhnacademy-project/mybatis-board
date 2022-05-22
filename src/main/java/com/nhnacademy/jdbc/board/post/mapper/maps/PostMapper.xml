@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhnacademy.jdbc.board.post.mapper.PostMapper">
+
+    <insert id="insertPost">
+        INSERT INTO post(writer_no, title, content, created_at, delete_NY)
+        VALUES (#{userNo}, #{title}, #{content}, now(), 'N')
+    </insert>
+
+    <insert id="insertWithFile">
+        INSERT INTO post(writer_no, title, content, created_at, delete_NY, file_path)
+        VALUES (#{userNo}, #{title}, #{content}, now(), 'N', #{filePath})
+    </insert>
+
+    <select id="findPostById" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no AS 'postNo'
+            , u.user_no AS 'writerNo'
+            , u.username AS 'username'
+            , u.name AS 'writer'
+            , p.title AS 'title'
+            , p.content AS 'content'
+            , p.created_at AS 'createdAt'
+            , p.delete_NY AS 'deletedAt'
+            , p.file_path AS 'filePath'
+            , p.modify_user_no AS 'modifyUserNo'
+            , p.modified_at AS 'modifiedAt'
+            , p.view_count as 'viewCount'
+        FROM post p INNER JOIN user u
+                            ON p.writer_no = u.user_no
+        WHERE post_no = #{postNo}
+    </select>
+
+    <select id="findPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+            , p.view_count as 'viewCount'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
+        FROM post p
+                 INNER JOIN user u
+                            ON p.writer_no = u.user_no
+        ORDER BY p.post_no LIMIT 20
+        OFFSET #{offset}
+    </select>
+
+    <select id="findFilterPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+            , p.view_count as 'viewCount'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
+        FROM post p
+                 INNER JOIN user u ON p.writer_no = u.user_no AND p.delete_NY = 'N'
+        ORDER BY p.post_no LIMIT 20
+        OFFSET #{offset}
+    </select>
+
+    <update id="modifyPostByNo">
+        UPDATE post
+        SET title          = #{title}
+          , content        = #{content}
+          , modified_at    = now()
+          , modify_user_no = #{modifyUserNo}
+        WHERE post_no = #{postNo}
+    </update>
+
+    <update id="deletePostByNo">
+        UPDATE post
+        SET delete_NY = 'Y'
+        WHERE post_no = #{postNo}
+    </update>
+
+    <update id="restorePostsByNo">
+        UPDATE post
+        SET delete_NY = 'N'
+        WHERE post_no = #{postNo}
+    </update>
+    <update id="increaseViewCount">
+        UPDATE post
+        SET view_count = view_count+1
+        WHERE post_no=#{postNo}
+    </update>
+
+    <select id="selectPageCount" resultType="java.lang.Integer">
+        SELECT table_rows
+        FROM information_schema.tables
+        WHERE table_schema = 'nhn_academy_17'
+          AND table_name = 'post'
+    </select>
+
+    <select id="findSearchPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
+        FROM (SELECT *
+              FROM post
+              WHERE delete_NY = 'N'
+                AND title LIKE CONCAT('%', #{search}, '%')) p
+                 INNER JOIN user u ON p.writer_no = u.user_no
+        ORDER BY p.post_no
+    </select>
+
+    <select id="findSearchFilterPagedPosts" resultType="com.nhnacademy.jdbc.board.post.domain.ReadPost">
+        SELECT p.post_no as 'postNo'
+            , u.user_no as 'writerNo'
+            , u.username as 'username'
+            , u.name as 'writer'
+            , p.title as 'title'
+            , p.content as 'content'
+            , p.created_at as 'createdAt'
+            , p.delete_NY as 'deleteNY'
+            , p.file_path as 'filePath'
+            , p.modify_user_no as 'modifyUserNo'
+            , p.modified_at as 'modifiedAt'
+            , (select count(*)
+               from comment c
+               where post_no = p.post_no
+               group by p.post_no) AS 'commentCount'
+        FROM (SELECT *
+              FROM post
+              WHERE title LIKE CONCAT('%', #{search}, '%')) p
+                 INNER JOIN user u ON p.writer_no = u.user_no
+        ORDER BY p.post_no
+    </select>
+</mapper>

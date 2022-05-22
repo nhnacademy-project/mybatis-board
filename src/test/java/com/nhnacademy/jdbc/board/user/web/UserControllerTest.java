@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -14,12 +13,10 @@ import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
 import com.nhnacademy.jdbc.board.user.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
@@ -64,6 +61,7 @@ class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
         UserController userController = new UserController(userService);
+
         when(bindingResult.hasErrors()).thenReturn(true);
 
         assertThatThrownBy(() -> userController.doLogin(null, bindingResult, request))
@@ -83,4 +81,5 @@ class UserControllerTest {
         HttpSession session = mvcResult.getRequest().getSession(false);
         assertThat(session).isNotNull();
     }
+
 }

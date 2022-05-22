@@ -10,6 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -24,8 +26,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 @Configuration
 @ComponentScan(basePackages = "com.nhnacademy.jdbc.board"
     , useDefaultFilters = false
-    , includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {
-    Controller.class}))
+    , includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {Controller.class}))
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware, MessageSourceAware {
 
     private ApplicationContext applicationContext;
@@ -80,4 +81,11 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware, Mes
         return requestMappingHandlerAdapter;
     }
 
+    @Bean
+    public MultipartResolver multipartResolver() {
+
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(-1);
+        return multipartResolver;
+    }
 }

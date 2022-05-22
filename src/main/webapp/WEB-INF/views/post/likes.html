@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        tbody td:nth-child(3):hover {
+            cursor: pointer;
+            color: gray;
+        }
+    </style>
+    <title>Title</title>
+</head>
+<body>
+
+<a href="/">HOME</a>
+
+<span th:if="${likeList.empty}">좋아요한 게시물이 없습니다.</span>
+<table th:unless="${likeList.empty}">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>작성자</th>
+        <th>제목</th>
+        <th>작성일시</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="post : ${likeList}">
+        <td th:text="${post.postNo}"></td>
+        <td th:text="${post.writer}"></td>
+        <td th:text="${post.title}"
+            th:onclick="'location.href=\''+ @{|/post/${post.postNo}|} + '\''"></td>
+        <td th:text="${post.createdAt}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhnacademy.jdbc.board.comment.mapper.CommentMapper">
+
+    <insert id="insertComment">
+        INSERT INTO comment (content, created_at, user_no, post_no)
+        VALUES (#{content}, now(), #{userNo}, #{postNo})
+    </insert>
+
+    <select id="findComments" resultType="com.nhnacademy.jdbc.board.comment.domain.SelectComment">
+        SELECT c.content AS 'content', u.name AS 'writerName', c.created_at AS 'createdAt'
+        FROM comment c
+                 INNER JOIN user u ON c.user_no = u.user_no
+        WHERE c.post_no = #{postNo}
+    </select>
+</mapper>
