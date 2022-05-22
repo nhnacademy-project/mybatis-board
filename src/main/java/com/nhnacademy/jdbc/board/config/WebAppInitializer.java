@@ -1,16 +1,11 @@
 package com.nhnacademy.jdbc.board.config;
 
+import javax.servlet.Filter;
 import java.io.File;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
 import javax.servlet.Filter
-import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
-import java.util.EnumSet;
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
