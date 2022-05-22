@@ -35,9 +35,14 @@ public class PagingTest {
         commentService = mock(CommentService.class);
 
         userService = mock(UserService.class);
+
+
+        mockMvc = MockMvcBuilders.standaloneSetup(new PostController(postService, commentService, userService, likesService)).build();
+
         mockMvc = MockMvcBuilders
-            .standaloneSetup(new PostController(postService, commentService, userService, likesService))
-            .build();
+                .standaloneSetup(new PostController(postService, commentService, userService, likesService))
+                .build();
+
     }
 
 
@@ -53,18 +58,18 @@ public class PagingTest {
         session.setAttribute("user", mockLoginUser);
 
         when(postService.getTotalPage()).thenReturn(1);
-        when(postService.findPagedPosts(anyInt(), anyInt(),anyBoolean())).thenReturn(page);
+        when(postService.findPagedPosts(anyInt(), anyInt(), anyBoolean())).thenReturn(page);
 
         mockMvc.perform(get("/post/posts").session(session))
                 .andExpect(status().isOk())
-               .andExpect(view().name("post/posts"));
+                .andExpect(view().name("post/posts"));
     }
 
     @Test
     @DisplayName("최소 페이지 미만 요청")
     void paging_lower_bound_error() throws Exception {
         mockMvc.perform(get("/post/posts?page=0"))
-               .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -73,7 +78,7 @@ public class PagingTest {
         int page = 10;
         when(postService.getTotalPage()).thenReturn(page - 1);
         mockMvc.perform(get("/post/posts?page=" + page))
-               .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection());
 
     }
 

@@ -86,6 +86,44 @@ public class DefaultPostService implements PostService {
     }
 
     @Override
+    public void increaseViewCount(Long postNo) {
+        postMapper.increaseViewCount(postNo);
+    }
+
+    @Override
+    public Page<PostResponse> findSearchPagedPosts(Integer page, int totalPage, boolean isFilter, String search) {
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        if (page > totalPage) {
+            page = totalPage;
+        }
+
+        Integer offset = 20 * (page - 1);
+        List<ReadPost> list;
+        if (isFilter) {
+            list = postMapper.findSearchFilterPagedPosts(offset, search);
+        } else {
+            list = postMapper.findSearchPagedPosts(offset, search);
+        }
+
+        int start = ((page - 1) / 5) * 5 + 1;
+        int end = Math.min(start + 4, totalPage);
+
+        return Page.<PostResponse>builder()
+                .pageList(list.stream()
+                        .map(PostResponse::new)
+                        .collect(toList()))
+                .page(page)
+                .start(start)
+                .end(end)
+                .totalPage(totalPage)
+                .build();
+    }
+
+    @Override
     public PostResponse findPostByNo(Long postNo) {
         return postMapper.findPostById(postNo)
                          .map(PostResponse::new)

@@ -3,6 +3,7 @@ package com.nhnacademy.jdbc.board.post.dto.response;
 import com.nhnacademy.jdbc.board.post.domain.Post;
 import com.nhnacademy.jdbc.board.post.domain.ReadPost;
 import java.util.Date;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,6 +22,8 @@ public class PostResponse {
     private String filePath;
     private Long modifyUserNo;
     private Date modifiedAt;
+    private Long viewCount;
+    private Integer commentCount;
 
     public PostResponse(ReadPost post) {
         this.postNo = post.getPostNo();
@@ -34,9 +37,8 @@ public class PostResponse {
         this.filePath = post.getFilePath();
         this.modifyUserNo = post.getModifyUserNo();
         this.modifiedAt = post.getModifiedAt();
-    }
-
-    public boolean isDeleted() {
-        return deleteNY == Post.DELETED;
+        this.viewCount = post.getViewCount();
+        this.commentCount = Optional.ofNullable(post.getCommentCount())
+                                    .orElse(0);
     }
 }

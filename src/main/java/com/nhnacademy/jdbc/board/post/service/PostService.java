@@ -22,4 +22,8 @@ public interface PostService {
     boolean isWriter (Long postNo, Long userNo);
 
     void restorePost(Long postNo);
+
+    void increaseViewCount(Long postNo);
+
+    Page<PostResponse> findSearchPagedPosts(Integer page, int totalPage, boolean isFilter, String search);
 }

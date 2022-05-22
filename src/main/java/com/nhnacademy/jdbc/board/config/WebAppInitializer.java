@@ -1,9 +1,17 @@
 package com.nhnacademy.jdbc.board.config;
 
 import java.io.File;
-import javax.servlet.Filter;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
+import javax.servlet.Filter
+import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
@@ -56,5 +64,6 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
             multipartConfig =
             new MultipartConfigElement(UPLOAD_PATH, MAX_FILE_SIZE, MAX_FILE_SIZE, 0);
         registration.setMultipartConfig(multipartConfig);
+
     }
 }
