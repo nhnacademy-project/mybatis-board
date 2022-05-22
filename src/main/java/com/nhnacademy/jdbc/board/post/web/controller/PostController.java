@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,10 +36,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
-
-    private final static String FS = File.separator;
-    private final static String UPLOAD_PATH = System.getProperty("user.dir")
-        + FS + "src" + FS + "main" + FS + "resources" + FS + "upload" + FS;
 
     private final PostService postService;
     private final CommentService commentService;
@@ -53,50 +49,43 @@ public class PostController {
             throw new NoAuthorizationException();
         }
 
-        ModelAndView mav = new ModelAndView("post/post-upload");
+        ModelAndView mav = new ModelAndView("post/post-form");
         mav.addObject("post", postInsertRequest);
         mav.addObject("url", "write");
         return mav;
     }
 
     @PostMapping(value = "/write")
-    public ModelAndView doInsert(@RequestParam("title") String title,
-                                 @RequestParam("content") String content,
-                                 @RequestPart(value = "file", required = false) MultipartFile file,
-                                 HttpSession session) throws IOException {
+    public ModelAndView doInsert(@ModelAttribute PostInsertRequest postInsertRequest,
+                                 HttpServletRequest request) throws IOException {
 
         UserLoginResponse userLoginResponse =
-            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+            Optional.ofNullable((UserLoginResponse) request.getSession().getAttribute("user"))
                     .orElseThrow(NoAuthorizationException::new);
 
         if (Objects.isNull(userLoginResponse)) {
             throw new NoAuthorizationException();
         }
 
+        postInsertRequest.setUserNo(userLoginResponse.getUserNo());
+
 //        if (bindingResult.hasErrors()) {
 //            throw new ValidationFailedException(bindingResult);
 //        }
 
-        PostInsertRequest postInsertRequest =
-            new PostInsertRequest(userLoginResponse.getUserNo(), title, content, file);
-
-        log.info("=== file name ===");
+        MultipartFile file = postInsertRequest.getFile();
 
         if (Objects.nonNull(file)) {
+            String path = request.getServletContext().getRealPath("/WEB-INF/upload/");
             log.info("file is not null");
             log.info("file name = {}", file.getOriginalFilename());
-            file.transferTo(Paths.get(UPLOAD_PATH + file.getOriginalFilename()));
+            file.transferTo(new File(path  + file.getOriginalFilename()));
             postService.insertPost(postInsertRequest);
         } else {
-            log.info("file is null");
+            postService.insertPost(postInsertRequest);
         }
 
-        postInsertRequest.setUserNo(userLoginResponse.getUserNo());
-
-        ModelAndView mav = new ModelAndView("redirect:posts");
-        postService.insertPost(postInsertRequest);
-
-        return mav;
+        return new ModelAndView("redirect:posts");
     }
 
     @GetMapping("/{postNo}")

@@ -9,7 +9,7 @@
         VALUES (#{userNo}, #{title}, #{content}, now(), 'N')
     </insert>
 
-    <insert id="insertWithFilePost">
+    <insert id="insertWithFile">
         INSERT INTO post(writer_no, title, content, created_at, delete_NY, file_path)
         VALUES (#{userNo}, #{title}, #{content}, now(), 'N', #{filePath})
     </insert>

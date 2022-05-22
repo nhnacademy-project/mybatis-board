@@ -80,6 +80,7 @@ public class PagingTest {
     @Test
     void test() {
         String s = File.separator;
-        System.out.println(System.getProperty("user.dir") + s + "src" + s + "main" + s + "resources" + s + "upload");
+        System.out.println(System.getProperty("user.dir") + s + "src" + s + "main" + s + "resources" + s +
+            "WEB-INF/upload");
     }
 }
