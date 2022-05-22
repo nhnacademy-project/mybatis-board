@@ -21,6 +21,7 @@
             , p.file_path AS 'filePath'
             , p.modify_user_no AS 'modifyUserNo'
             , p.modified_at AS 'modifiedAt'
+            , p.view_count as 'viewCount'
         FROM post p INNER JOIN user u
                             ON p.writer_no = u.user_no
         WHERE post_no = #{postNo}
@@ -38,6 +39,7 @@
             , p.file_path AS 'filePath'
             , p.modify_user_no AS 'modifyUserNo'
             , p.modified_at AS 'modifiedAt'
+            , p.view_count as 'viewCount'
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no
     </select>
@@ -54,6 +56,7 @@
             , p.file_path AS 'filePath'
             , p.modify_user_no AS 'modifyUserNo'
             , p.modified_at AS 'modifiedAt'
+            , p.view_count as 'viewCount'
         FROM post p
                  INNER JOIN user u
                             ON p.writer_no = u.user_no
@@ -72,6 +75,7 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , p.view_count as 'viewCount'
         FROM post p
                  INNER JOIN user u
                             ON p.writer_no = u.user_no
@@ -92,6 +96,7 @@
             , p.file_path as 'filePath'
             , p.modify_user_no as 'modifyUserNo'
             , p.modified_at as 'modifiedAt'
+            , p.view_count as 'viewCount'
         FROM post p
                  INNER JOIN user u ON p.writer_no = u.user_no AND p.delete_NY = 'N'
         ORDER BY p.post_no LIMIT 20
@@ -117,14 +122,18 @@
         SET delete_NY = 'N'
         WHERE post_no = #{postNo}
     </update>
+    <update id="increaseViewCount">
+        UPDATE post
+        SET view_count = view_count+1
+        WHERE post_no=#{postNo}
+    </update>
 
 
     <select id="selectPageCount" resultType="java.lang.Integer">
         SELECT table_rows
         FROM information_schema.tables
         WHERE table_schema = 'nhn_academy_17'
-          AND table_name = 'post';
+          AND table_name = 'post'
     </select>
-
 
 </mapper>

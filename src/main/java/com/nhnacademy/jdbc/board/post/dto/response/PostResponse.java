@@ -21,6 +21,7 @@ public class PostResponse {
     private String filePath;
     private Long modifyUserNo;
     private Date modifiedAt;
+    private Long viewCount;
 
     public PostResponse(ReadPost post) {
         this.postNo = post.getPostNo();
@@ -34,6 +35,7 @@ public class PostResponse {
         this.filePath = post.getFilePath();
         this.modifyUserNo = post.getModifyUserNo();
         this.modifiedAt = post.getModifiedAt();
+        this.viewCount = post.getViewCount();
     }
 
     public boolean isDeleted() {

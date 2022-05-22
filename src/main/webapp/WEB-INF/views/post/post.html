@@ -10,10 +10,13 @@
 <div>
     <h1 th:text="${post.title}">제목</h1>
     <p>
-        작성자: <span class="author" th:text="${post.writer}">작성자</span>
+        작성자: <span th:text="${post.writer}">작성자</span>
     </p>
     <p>
-        작성일: <span class="date" th:text="${post.createdAt}">작성일</span>
+        작성일: <span th:text="${post.createdAt}">작성일</span>
+    </p>
+    <p>
+        조회수 : <span th:text="${post.viewCount}"></span>
     </p>
 
     <div th:if="${post.modifyUserNo != null} ">

@@ -66,6 +66,11 @@ public class DefaultPostService implements PostService {
     }
 
     @Override
+    public void increaseViewCount(Long postNo) {
+        postMapper.increaseViewCount(postNo);
+    }
+
+    @Override
     public PostResponse findPostByNo(Long postNo) {
         return postMapper.findPostById(postNo)
                 .map(PostResponse::new)

@@ -28,4 +28,6 @@ public interface PostService {
     boolean isWriter (Long postNo, Long userNo);
 
     void restorePost(Long postNo);
+
+    void increaseViewCount(Long postNo);
 }

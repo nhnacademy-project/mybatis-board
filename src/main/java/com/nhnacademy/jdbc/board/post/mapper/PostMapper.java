@@ -28,4 +28,6 @@ public interface PostMapper {
     Integer selectPageCount();
 
     void restorePostsByNo(Long postNo);
+
+    void increaseViewCount(Long postNo);
 }
