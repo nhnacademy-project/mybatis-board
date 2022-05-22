@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>게시물 등록</title>
+</head>
+<body>
+<form method="post" action="write" enctype="multipart/form-data">
+  <label>
+    제목<br/>
+    <input type="text" name="title" placeholder="제목을 입력하세요."/>
+  </label><br/><br/><br/>
+
+  <label>
+    <textarea name="content" rows="10" cols="80" placeholder="내용을 입력하세요."></textarea>
+  </label><br/><br/>
+
+  <label>
+    파일<br />
+  <input type="file" name="file"><br/><br/>
+  </label>
+  <input type="submit" value="등록"/>
+
+</form>
+</body>
+</html>
