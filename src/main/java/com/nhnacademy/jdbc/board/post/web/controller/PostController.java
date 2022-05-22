@@ -14,6 +14,7 @@ import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+
 import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.Cookie;
@@ -45,7 +46,6 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
     private final UserService userService;
-
     private final LikesService likesService;
 
     @GetMapping(value = "/write")
@@ -55,7 +55,11 @@ public class PostController {
             throw new NoAuthorizationException();
         }
 
-        return new ModelAndView("post/post-form").addObject("post", postInsertRequest);
+        ModelAndView mav = new ModelAndView("post/post-form");
+
+        mav.addObject("post", postInsertRequest);
+        mav.addObject("url", "write");
+        return mav;
     }
 
     @PostMapping(value = "/write")
@@ -76,7 +80,6 @@ public class PostController {
         postInsertRequest.setUserNo(userLoginResponse.getUserNo());
 
         ModelAndView mav = new ModelAndView("redirect:posts");
-        mav.addObject("url", "write");
         postService.insertPost(postInsertRequest);
 
         return mav;
@@ -87,7 +90,7 @@ public class PostController {
 
         addViewedPostNoToCookie(request,response,String.valueOf(postNo));
         ModelAndView mav = new ModelAndView("post/post");
-      
+
         PostResponse post = postService.findPostByNo(postNo);
 
         Long modifyUserNo = post.getModifyUserNo();
@@ -181,6 +184,40 @@ public class PostController {
             isFilter = true;
             mav.addObject("page", postService.findPagedPosts(page, totalPage, isFilter));
         }
+
+        return mav;
+    }
+
+    @GetMapping("/search")
+    public ModelAndView postsSearch(@RequestParam(name = "page", required = false) Integer page,
+                                    @RequestParam(name = "search") String search,
+                                    HttpSession httpSession) {
+
+        UserLoginResponse user = (UserLoginResponse) httpSession.getAttribute("user");
+
+        page = Optional.ofNullable(page).orElse(1);
+
+        if (page < 1) {
+            return new ModelAndView("redirect:posts?page=1&search=" + search);
+        }
+
+        int totalPage = postService.getTotalPage();
+        if (page > totalPage) {
+            return new ModelAndView("redirect:posts&search=" + search);
+        }
+
+        ModelAndView mav = new ModelAndView("post/posts");
+        mav.addObject("search", true);
+        mav.addObject("keyword", true);
+        boolean isFilter = false;
+
+        if (isLoginAdmin(user)) {
+            mav.addObject("page", postService.findSearchPagedPosts(page, totalPage, isFilter, search));
+        } else {
+            isFilter = true;
+            mav.addObject("page", postService.findSearchPagedPosts(page, totalPage, isFilter, search));
+        }
+
         return mav;
     }
 
@@ -192,8 +229,8 @@ public class PostController {
     public ModelAndView modify(@PathVariable(name = "postNo") Long postNo, HttpSession session) {
 
         UserLoginResponse user =
-            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
-                    .orElseThrow(NoAuthorizationException::new);
+                Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                        .orElseThrow(NoAuthorizationException::new);
 
         if (canNotModify(postNo, user)) {
             throw new ModifyAccessException();
@@ -216,8 +253,8 @@ public class PostController {
     public ModelAndView doModify(@ModelAttribute PostModifyRequest request, HttpSession session) {
 
         UserLoginResponse user =
-            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
-                    .orElseThrow(NoAuthorizationException::new);
+                Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                        .orElseThrow(NoAuthorizationException::new);
 
         if (canNotModify(request.getPostNo(), user)) {
             throw new ModifyAccessException();
@@ -233,8 +270,8 @@ public class PostController {
     public ModelAndView doDelete(@PathVariable("postNo") Long postNo, HttpSession session) {
 
         UserLoginResponse user =
-            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
-                    .orElseThrow(NoAuthorizationException::new);
+                Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                        .orElseThrow(NoAuthorizationException::new);
 
         if (canNotModify(postNo, user)) {
             throw new ModifyAccessException();
@@ -249,8 +286,8 @@ public class PostController {
     public ModelAndView doRestore(@PathVariable("postNo") Long postNo, HttpSession session) {
 
         UserLoginResponse user =
-            Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
-                    .orElseThrow(NoAuthorizationException::new);
+                Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
+                        .orElseThrow(NoAuthorizationException::new);
 
         if (!user.isAdmin()) {
             throw new ModifyAccessException();

@@ -2,7 +2,6 @@ package com.nhnacademy.jdbc.board.comment.web;
 
 import com.nhnacademy.jdbc.board.comment.dto.request.CommentRequest;
 import com.nhnacademy.jdbc.board.comment.service.CommentService;
-import com.nhnacademy.jdbc.board.exception.ContentLengthOverException;
 import com.nhnacademy.jdbc.board.exception.NoAuthorizationException;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public class CommentController {
     public ModelAndView writeComment(@PathVariable("postNo") Long postNo,
                                      @RequestParam("content") String content,
                                      HttpSession session) {
-      
+
         UserLoginResponse user =
             Optional.ofNullable((UserLoginResponse) session.getAttribute("user"))
                     .orElseThrow(NoAuthorizationException::new);

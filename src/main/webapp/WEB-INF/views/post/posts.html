@@ -23,15 +23,19 @@
 <a href="/">HOME</a>
 
 <button th:onclick="'location.href=\''+ @{write} + '\''">게시물 작성</button>
+
 <table th:with="isAdmin = ${session.user != null} and ${#strings.equals(session.user['adminNY'], 'Y')}">
     <thead>
     <tr>
         <th>번호</th>
         <th>작성자</th>
         <th>제목</th>
+        <th>댓글 수</th>
         <th>작성일시</th>
-        <th th:if="${isAdmin == true}">복구</th>
-        <th th:if="${isAdmin == true}">삭제</th>
+        <th:block th:if="${isAdmin == true}">
+            <th>복구</th>
+            <th>삭제</th>
+        </th:block>
     </tr>
     </thead>
     <tbody>
@@ -40,13 +44,18 @@
         <td th:text="${post.writer}"></td>
         <td th:text="${post.title}"
             th:onclick="'location.href=\''+ @{|${post.postNo}|} + '\''"></td>
+        <td th:text="${post.commentCount}"></td>
         <td th:text="${post.createdAt}"></td>
         <th:block th:if="${isAdmin == true}">
             <td>
-                <button th:disabled="${#strings.equals(post.deleteNY, 'N')}" th:onclick="'location.href=\''+ @{|/post/restore/${post.postNo}|} + '\''">복구</button>
+                <button th:disabled="${#strings.equals(post.deleteNY, 'N')}"
+                        th:onclick="'location.href=\''+ @{|/post/restore/${post.postNo}|} + '\''">복구
+                </button>
             </td>
             <td>
-                <button th:disabled="${#strings.equals(post.deleteNY, 'Y')}" th:onclick="'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''">삭제</button>
+                <button th:disabled="${#strings.equals(post.deleteNY, 'Y')}"
+                        th:onclick="'location.href=\''+ @{|/post/delete/${post.postNo}|} + '\''">삭제
+                </button>
             </td>
         </th:block>
     </tr>
@@ -54,7 +63,7 @@
 </table>
 <br/>
 
-<table class="page">
+<table class="page" th:if="${search != true}">
     <tr>
         <td th:if="${page.start > 5}"
             th:onclick="'location.href=\''+ @{|posts?page=${page.start - 1}|} + '\''">&lt;
@@ -70,6 +79,12 @@
         </td>
     </tr>
 </table>
+<form th:action="@{search}">
+    <input type="text" name="search">
+    <button>검색</button>
+</form>
+<br/>
+
 
 </body>
 </html>

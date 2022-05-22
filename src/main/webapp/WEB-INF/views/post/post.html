@@ -21,10 +21,10 @@
 
     <div th:if="${post.modifyUserNo != null} ">
     <p>
-        수정자: <span class="modifier" th:text="${modifierName}">수정자</span>
+        수정자: <span th:text="${modifierName}">수정자</span>
     </p>
     <p>
-        수정일: <span class="modifydate" th:text="${post.modifiedAt}">작성일</span>
+        수정일: <span th:text="${post.modifiedAt}">작성일</span>
     </p>
     </div>
     <th:block th:if="${session.user != null}">

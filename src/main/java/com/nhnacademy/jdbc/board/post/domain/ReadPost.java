@@ -23,4 +23,5 @@ public class ReadPost {
     private Long modifyUserNo;
     private Date modifiedAt;
     private Long viewCount;
+    private Integer commentCount;
 }

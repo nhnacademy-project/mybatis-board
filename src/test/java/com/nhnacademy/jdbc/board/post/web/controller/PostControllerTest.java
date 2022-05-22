@@ -1,6 +1,7 @@
 package com.nhnacademy.jdbc.board.post.web.controller;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,10 +14,8 @@ import com.nhnacademy.jdbc.board.config.WebConfig;
 import com.nhnacademy.jdbc.board.exception.ModifyAccessException;
 import com.nhnacademy.jdbc.board.exception.ValidationFailedException;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
-import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
-import com.nhnacademy.jdbc.board.user.service.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +83,7 @@ class PostControllerTest {
         session.setAttribute("user", mockLoginUser);
 
         mockMvc.perform(get("/post/write")
-                .session(session))
+                        .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("post/post-form"));
     }
@@ -136,7 +135,7 @@ class PostControllerTest {
 
         when(mockLoginUser.isAdmin()).thenReturn(true);
 
-        mockMvc.perform(get("/post/modify/"+1)
+        mockMvc.perform(get("/post/modify/" + 1)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("post/post-form"));
@@ -157,9 +156,9 @@ class PostControllerTest {
 
         when(mockLoginUser.getUserNo()).thenReturn(1L);
 
-        mockMvc.perform(post("/post/modify/"+1)
-                .session(session)
-                .params(insertValues))
+        mockMvc.perform(post("/post/modify/" + 1)
+                        .session(session)
+                        .params(insertValues))
                 .andExpect(status().is3xxRedirection());
 
 
@@ -176,7 +175,7 @@ class PostControllerTest {
 
         when(mockLoginUser.isAdmin()).thenReturn(true);
 
-        mockMvc.perform(get("/post/delete/" +1)
+        mockMvc.perform(get("/post/delete/" + 1)
                         .session(session))
                 .andExpect(status().is3xxRedirection());
     }
@@ -191,7 +190,7 @@ class PostControllerTest {
 
         when(!mockLoginUser.isAdmin()).thenReturn(true);
 
-        mockMvc.perform(get("/post/delete/" +1)
+        mockMvc.perform(get("/post/delete/" + 1)
                         .session(session))
                 .andExpect(status().is3xxRedirection());
     }
@@ -209,21 +208,21 @@ class PostControllerTest {
 
         when(mockLoginUser.getUserNo()).thenReturn(2L);
 
-        assertThatThrownBy(() -> postController.doDelete(4L,session))
+        assertThatThrownBy(() -> postController.doDelete(4L, session))
                 .isInstanceOf(ModifyAccessException.class);
     }
 
     @Test
     @DisplayName("게시물 복구 {관리자}")
     @Rollback
-    void retoreAdmin() throws Exception {
+    void restoreAdmin() throws Exception {
 
         UserLoginResponse mockLoginUser = mock(UserLoginResponse.class);
         session.setAttribute("user", mockLoginUser);
 
         when(mockLoginUser.isAdmin()).thenReturn(true);
 
-        mockMvc.perform(get("/post/restore/" +1)
+        mockMvc.perform(get("/post/restore/" + 1)
                         .session(session))
                 .andExpect(status().is3xxRedirection());
     }
@@ -231,7 +230,7 @@ class PostControllerTest {
     @Test
     @DisplayName("게시물 복구 예외처리 {관리자가 아닌 유저}")
     @Rollback
-    void retoreIsNotAdminModifyAccessException() throws Exception {
+    void restoreIsNotAdminModifyAccessException() throws Exception {
 
         PostService postService = mock(PostService.class);
         PostController postController = new PostController(postService,null ,null,null);
@@ -241,8 +240,16 @@ class PostControllerTest {
 
         when(mockLoginUser.getUserNo()).thenReturn(2L);
 
-        assertThatThrownBy(() -> postController.doRestore(4L,session))
+        assertThatThrownBy(() -> postController.doRestore(4L, session))
                 .isInstanceOf(ModifyAccessException.class);
     }
 
+    @Test
+    @DisplayName("게시물 제목 검색")
+    void searchToTitlePosts() throws Exception {
+        String searchKeyword = "hello";
+        mockMvc.perform(get("/post/search?search="+searchKeyword))
+                .andExpect(status().isOk())
+                .andExpect(view().name("post/posts"));
+    }
 }
