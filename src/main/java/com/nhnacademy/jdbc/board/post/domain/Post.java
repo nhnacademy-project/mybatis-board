@@ -23,13 +23,6 @@ public class Post {
     private Date modifiedAt;
     private Long modifyUserNo;
 
-    public Post(Long userNo, String title, String content, Date createdAt) {
-        this.userNo = userNo;
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-    }
-
     @Builder
     public Post(Long postNo, String title, String content, Long modifyUserNo) {
         this.postNo = postNo;

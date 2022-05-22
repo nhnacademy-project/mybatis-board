@@ -5,8 +5,6 @@ import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
 import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 
-import java.util.List;
-
 public interface PostService {
 
     void insertPost(PostInsertRequest postInsertRequest);
@@ -16,10 +14,6 @@ public interface PostService {
     void deletePost(Long postNo);
 
     PostResponse findPostByNo(Long postNo);
-
-    List<PostResponse> findNotDeletedPosts();
-
-    List<PostResponse> findAllPosts();
 
     Page<PostResponse> findPagedPosts(int page, int totalPage, boolean isFilter);
 

@@ -13,6 +13,7 @@ import com.nhnacademy.jdbc.board.post.service.DefaultPostService;
 import com.nhnacademy.jdbc.board.post.service.PostService;
 import com.nhnacademy.jdbc.board.user.dto.response.UserLoginResponse;
 import com.nhnacademy.jdbc.board.user.service.UserService;
+import java.io.File;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,5 +75,11 @@ public class PagingTest {
         mockMvc.perform(get("/post/posts?page=" + page))
                .andExpect(status().is3xxRedirection());
 
+    }
+
+    @Test
+    void test() {
+        String s = File.separator;
+        System.out.println(System.getProperty("user.dir") + s + "src" + s + "main" + s + "resources" + s + "upload");
     }
 }

@@ -5,16 +5,15 @@ import static java.util.stream.Collectors.toList;
 import com.nhnacademy.jdbc.board.exception.PostNotFoundException;
 import com.nhnacademy.jdbc.board.post.domain.Page;
 import com.nhnacademy.jdbc.board.post.domain.Post;
+import com.nhnacademy.jdbc.board.post.domain.PostInsert;
+import com.nhnacademy.jdbc.board.post.domain.PostInsertWithFile;
 import com.nhnacademy.jdbc.board.post.domain.ReadPost;
 import com.nhnacademy.jdbc.board.post.dto.request.PostInsertRequest;
 import com.nhnacademy.jdbc.board.post.dto.request.PostModifyRequest;
 import com.nhnacademy.jdbc.board.post.dto.response.PostResponse;
 import com.nhnacademy.jdbc.board.post.mapper.PostMapper;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +28,32 @@ public class DefaultPostService implements PostService {
     @Override
     public void insertPost(PostInsertRequest postInsertRequest) {
 
-        Post post = new Post(postInsertRequest.getUserNo()
-                , postInsertRequest.getTitle()
-                , postInsertRequest.getContent()
-                , new Date()
-        );
+        if (Objects.isNull(postInsertRequest.getFile())) {
+            insert(postInsertRequest);
+            return;
+        }
+        insertWithFile(postInsertRequest);
+    }
+
+    private void insertWithFile(PostInsertRequest postInsertRequest) {
+        PostInsertWithFile post =
+            PostInsertWithFile.builder()
+                              .userNo(postInsertRequest.getUserNo())
+                              .title(postInsertRequest.getTitle())
+                              .content(postInsertRequest.getContent())
+                              .filePath(postInsertRequest.getFile()
+                                                         .getOriginalFilename())
+                              .build();
+
+        postMapper.insertWithFile(post);
+    }
+
+    private void insert(PostInsertRequest postInsertRequest) {
+        PostInsert post = PostInsert.builder()
+                                    .userNo(postInsertRequest.getUserNo())
+                                    .title(postInsertRequest.getTitle())
+                                    .content(postInsertRequest.getContent())
+                                    .build();
 
         postMapper.insertPost(post);
     }
@@ -43,11 +63,11 @@ public class DefaultPostService implements PostService {
     public void modifyPost(PostModifyRequest postModifyRequest) {
 
         Post post = Post.builder()
-                .postNo(postModifyRequest.getPostNo())
-                .title(postModifyRequest.getTitle())
-                .content(postModifyRequest.getContent())
-                .modifyUserNo(postModifyRequest.getModifyUserNo())
-                .build();
+                        .postNo(postModifyRequest.getPostNo())
+                        .title(postModifyRequest.getTitle())
+                        .content(postModifyRequest.getContent())
+                        .modifyUserNo(postModifyRequest.getModifyUserNo())
+                        .build();
 
         postMapper.modifyPostByNo(post);
     }
@@ -68,24 +88,8 @@ public class DefaultPostService implements PostService {
     @Override
     public PostResponse findPostByNo(Long postNo) {
         return postMapper.findPostById(postNo)
-                .map(PostResponse::new)
-                .orElseThrow(PostNotFoundException::new);
-    }
-
-    @Override
-    public List<PostResponse> findNotDeletedPosts() {
-        return postMapper.findNotDeletedPosts()
-                .stream()
-                .map(PostResponse::new)
-                .collect(toList());
-    }
-
-    @Override
-    public List<PostResponse> findAllPosts() {
-        return postMapper.findAllPosts()
-                .stream()
-                .map(PostResponse::new)
-                .collect(toList());
+                         .map(PostResponse::new)
+                         .orElseThrow(PostNotFoundException::new);
     }
 
     @Override
@@ -111,14 +115,14 @@ public class DefaultPostService implements PostService {
         int end = Math.min(start + 4, totalPage);
 
         return Page.<PostResponse>builder()
-                .pageList(list.stream()
-                                .map(readPost -> new PostResponse(readPost))
-                                .collect(toList()))
-                .page(page)
-                .start(start)
-                .end(end)
-                .totalPage(totalPage)
-                .build();
+                   .pageList(list.stream()
+                                 .map(PostResponse::new)
+                                 .collect(toList()))
+                   .page(page)
+                   .start(start)
+                   .end(end)
+                   .totalPage(totalPage)
+                   .build();
     }
 
     @Override
@@ -130,7 +134,7 @@ public class DefaultPostService implements PostService {
     @Override
     public boolean isWriter(Long postNo, Long userNo) {
         ReadPost readPost = postMapper.findPostById(postNo)
-                .orElseThrow(PostNotFoundException::new);
+                                      .orElseThrow(PostNotFoundException::new);
         return Objects.equals(readPost.getWriterNo(), userNo);
     }
 }
